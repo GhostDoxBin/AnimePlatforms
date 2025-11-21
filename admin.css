@@ -365,6 +365,66 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    .container {
+        padding: 0 15px;
+    }
+
+    .admin-header h1 {
+        font-size: 24px;
+    }
+
+    .admin-info {
+        grid-template-columns: 1fr;
+        gap: 15px;
+    }
+
+    .admin-tabs {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+
+    .admin-tab {
+        padding: 10px 15px;
+        font-size: 14px;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .admin-table {
+        min-width: 600px;
+        font-size: 13px;
+    }
+
+    .admin-table th,
+    .admin-table td {
+        padding: 8px 6px;
+    }
+
+    .btn-edit,
+    .btn-delete {
+        padding: 6px 10px;
+        font-size: 14px;
+    }
+
+    .modal {
+        width: 95%;
+        max-width: 95%;
+        margin: 10px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    .form-row {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .form-group {
+        width: 100%;
+    }
     .admin-info {
         grid-template-columns: 1fr;
     }

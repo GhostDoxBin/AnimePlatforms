@@ -12,10 +12,10 @@
     <header>
         <div class="container">
             <div class="header-content">
+ть                 <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Меню">☰</button>
                 <a href="index.html" class="logo">Аниме<span>Платформа</span></a>
-                <nav>
+                <nav id="main-nav">
                     <ul>
-                        
                         <li><a href="index.html" class="active">Главная</a></li>
                         <li><a href="catalog.html">Каталог</a></li>
                         <li><a href="player.html">Плеер</a></li>
@@ -29,9 +29,8 @@
                         <!-- Будет заполнено через JavaScript -->
                     </div>
                     <div id="admin-link" style="display: none;"></div>
-                        <!-- Будет заполнено через JavaScript -->
-                    </div>
                 </div>
+            </div>
             </div>
         </div>
     </header>
@@ -178,6 +177,7 @@
     <!-- Существующие скрипты (для обратной совместимости) -->
     <script src="database.js"></script>
     <script src="anime-data.js"></script>
+    <script src="mobile-menu.js"></script>
     <script src="auth.js"></script>
     <script src="player.js"></script>
     <script src="modal.js"></script>
