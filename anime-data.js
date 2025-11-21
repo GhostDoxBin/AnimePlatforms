@@ -6,10 +6,37 @@ class AnimeData {
     }
 
     loadAnimeData() {
-        const savedData = localStorage.getItem('animeData');
+        // Используем единый ключ для всех устройств
+        const storageKey = 'anime_platform_anime';
+        
+        // Пытаемся загрузить из основного ключа
+        let savedData = localStorage.getItem(storageKey);
         if (savedData) {
-            return JSON.parse(savedData);
+            try {
+                return JSON.parse(savedData);
+            } catch (e) {
+                console.error('Ошибка парсинга данных из', storageKey, e);
+            }
         }
+        
+        // Миграция: если есть старые данные в 'animeData', переносим их
+        const oldData = localStorage.getItem('animeData');
+        if (oldData) {
+            try {
+                const parsed = JSON.parse(oldData);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    // Сохраняем в новый ключ
+                    localStorage.setItem(storageKey, oldData);
+                    // Удаляем старый ключ
+                    localStorage.removeItem('animeData');
+                    console.log('Данные мигрированы из animeData в anime_platform_anime');
+                    return parsed;
+                }
+            } catch (e) {
+                console.error('Ошибка миграции данных', e);
+            }
+        }
+        
         return this.getInitialAnimeData();
     }
 
@@ -87,7 +114,25 @@ class AnimeData {
     }
 
     saveAnimeData() {
-        localStorage.setItem('animeData', JSON.stringify(this.animeList));
+        // Используем единый ключ для всех устройств
+        const storageKey = 'anime_platform_anime';
+        localStorage.setItem(storageKey, JSON.stringify(this.animeList));
+        
+        // Синхронизация с database.js если он существует
+        if (window.database && window.database.animeList) {
+            window.database.animeList = this.animeList;
+            if (window.database.saveAnime) {
+                window.database.saveAnime();
+            }
+        }
+        
+        // Синхронизация с animeService если он существует
+        if (window.animeService && window.animeService.animeList) {
+            window.animeService.animeList = this.animeList;
+            if (window.animeService.saveAnimeList) {
+                window.animeService.saveAnimeList();
+            }
+        }
     }
 
     addAnime(anime) {

@@ -2,7 +2,10 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>Админ-панель | АнимеПлатформа</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="theme.css">
@@ -128,6 +131,19 @@
                 <div class="tab-content" id="stats-content">
                     <div class="tab-header">
                         <h2>Статистика платформы</h2>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <button class="btn btn-primary" id="quick-sync-btn">⚡ Быстрая синхронизация</button>
+                            <button class="btn btn-secondary" id="export-data-btn">📥 Экспорт данных</button>
+                            <button class="btn btn-secondary" id="import-data-btn">📤 Импорт данных</button>
+                            <input type="file" id="import-file-input" accept=".json" style="display: none;">
+                        </div>
+                        <div id="sync-qr-container" style="display: none; margin-top: 20px; text-align: center; padding: 20px; background: var(--bg-secondary); border-radius: 8px;">
+                            <h3 style="margin-bottom: 15px; color: var(--text-primary);">📱 Сканируйте QR-код на телефоне</h3>
+                            <img id="sync-qr-image" src="" alt="QR код" style="max-width: 300px; border-radius: 8px; margin-bottom: 15px;">
+                            <p style="color: var(--text-secondary); margin-bottom: 10px; word-break: break-all; font-size: 12px;" id="sync-link-text"></p>
+                            <button class="btn btn-secondary" id="copy-sync-link-btn">📋 Копировать ссылку</button>
+                            <button class="btn btn-secondary" id="close-sync-modal-btn" style="margin-left: 10px;">✕ Закрыть</button>
+                        </div>
                     </div>
                     
                     <div class="stats-grid">
@@ -151,6 +167,21 @@
                             <div class="stat-value" id="total-admins">0</div>
                             <div class="stat-label">Администраторов</div>
                         </div>
+                    </div>
+                    
+                    <div style="margin-top: 30px; padding: 20px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
+                        <h3 style="margin-bottom: 15px; color: var(--text-primary);">⚡ Быстрая синхронизация</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                            <strong>Новый способ:</strong> Нажмите "Быстрая синхронизация" и отсканируйте QR-код на телефоне. Данные синхронизируются автоматически!
+                        </p>
+                        <p style="color: var(--text-secondary); margin-bottom: 10px;">
+                            <strong>Классический способ:</strong> Экспорт/Импорт через файл
+                        </p>
+                        <ol style="color: var(--text-secondary); margin-left: 20px; line-height: 1.8; font-size: 14px;">
+                            <li>На ПК: нажмите "Экспорт данных" и сохраните файл</li>
+                            <li>На телефоне: откройте админ-панель и нажмите "Импорт данных"</li>
+                            <li>Выберите сохраненный файл</li>
+                        </ol>
                     </div>
                 </div>
             </div>
@@ -259,6 +290,7 @@
     <script src="services/auth-service.js"></script>
     <script src="services/anime-service.js"></script>
     <script src="services/anime-api.js"></script>
+    <script src="sync-service.js"></script>
     
     <!-- Существующие скрипты (для обратной совместимости) -->
     <script src="database.js"></script>

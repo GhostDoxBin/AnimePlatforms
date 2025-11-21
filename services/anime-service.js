@@ -52,20 +52,31 @@ class AnimeService {
                 this.favorites = new Set(favoritesArray);
             }
 
-            // Синхронизация с database.js если он существует
+            // Синхронизация: объединяем данные из всех источников
+            const allAnime = [...this.animeList];
+            
+            // Добавляем из database.js
             if (window.database && window.database.animeList) {
-                if (window.database.animeList.length > this.animeList.length) {
-                    this.animeList = window.database.animeList;
-                    this.saveAnimeList();
-                }
+                window.database.animeList.forEach(anime => {
+                    if (!allAnime.find(a => a.id === anime.id)) {
+                        allAnime.push(anime);
+                    }
+                });
             }
             
-            // Синхронизация с anime-data.js если он существует
+            // Добавляем из anime-data.js
             if (window.animeData && window.animeData.animeList) {
-                if (window.animeData.animeList.length > this.animeList.length) {
-                    this.animeList = window.animeData.animeList;
-                    this.saveAnimeList();
-                }
+                window.animeData.animeList.forEach(anime => {
+                    if (!allAnime.find(a => a.id === anime.id)) {
+                        allAnime.push(anime);
+                    }
+                });
+            }
+            
+            // Если нашли новые данные, сохраняем объединенный список
+            if (allAnime.length > this.animeList.length) {
+                this.animeList = allAnime;
+                this.saveAnimeList();
             }
             
             // Обновление обратной совместимости после загрузки
