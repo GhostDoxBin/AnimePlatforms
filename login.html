@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход | Аниме-платформа</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">Аниме<span>Платформа</span></a>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="player.html">Плеер</a></li>
+                        <li><a href="ratings.html">Рейтинги</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-controls">
+                    <button id="theme-toggle" class="btn-theme">🌙</button>
+                    <div class="auth-buttons">
+                        <!-- Будет заполнено через JavaScript -->
+                    </div>
+                    <div id="admin-link" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Login Form -->
+    <section class="container">
+        <div class="auth-container">
+            <div class="auth-form">
+                <h2 class="auth-title">Вход в аккаунт</h2>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label class="form-label" for="login-email">Email</label>
+                        <input type="email" id="login-email" class="form-input" placeholder="Введите ваш email" required>
+                        <div class="error-message" id="login-email-error">Пожалуйста, введите корректный email</div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="login-password">Пароль</label>
+                        <input type="password" id="login-password" class="form-input" placeholder="Введите ваш пароль" required>
+                        <div class="error-message" id="login-password-error">Пожалуйста, введите пароль</div>
+                    </div>
+                    <button type="submit" class="btn btn-submit">Войти</button>
+                </form>
+                <div class="auth-link">
+                    Нет аккаунта? <a href="signup.html">Зарегистрироваться</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>О нас</h3>
+                    <ul>
+                        <li><a href="#">О компании</a></li>
+                        <li><a href="#">Команда</a></li>
+                        <li><a href="#">Карьера</a></li>
+                        <li><a href="#">Новости</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Разделы</h3>
+                    <ul>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="#">Новинки</a></li>
+                        <li><a href="#">Топ-100</a></li>
+                        <li><a href="#">Жанры</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Поддержка</h3>
+                    <ul>
+                        <li><a href="#">Помощь</a></li>
+                        <li><a href="#">Контакты</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Сообщить о проблеме</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Правовая информация</h3>
+                    <ul>
+                        <li><a href="#">Условия использования</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                        <li><a href="#">Cookie</a></li>
+                        <li><a href="#">Авторские права</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 АнимеПлатформа. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Конфигурация и утилиты -->
+    <script src="config.js"></script>
+    <script src="utils/error-handler.js"></script>
+    <script src="utils/helpers.js"></script>
+    
+    <!-- Компоненты -->
+    <script src="components/Notification.js"></script>
+    
+    <!-- Сервисы -->
+    <script src="services/auth-service.js"></script>
+    <script src="services/anime-service.js"></script>
+    
+    <!-- Существующие скрипты (для обратной совместимости) -->
+    <script src="database.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>

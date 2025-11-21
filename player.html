@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Плеер аниме | АнимеПлатформа</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="theme.css">
+    <link rel="stylesheet" href="player.css">
+</head>
+<body data-theme="dark">
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">Аниме<span>Платформа</span></a>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="player.html" class="active">Плеер</a></li>
+                        <li><a href="ratings.html">Рейтинги</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-controls">
+                    <button id="theme-toggle" class="btn-theme">🌙</button>
+                    <div class="auth-buttons">
+                        <!-- Будет заполнено через JavaScript -->
+                    </div>
+                    <div id="admin-link" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Player Content -->
+    <section class="player-section">
+        <div class="container">
+            <div class="player-page-container">
+                <div class="player-page-header">
+                    <h1 id="player-main-title">Плеер аниме</h1>
+                    <div class="player-navigation">
+                        <a href="catalog.html" class="btn-back">
+                            ← Назад к каталогу
+                        </a>
+                    </div>
+                </div>
+
+                <div class="video-page-container">
+                    <div class="video-page-player" id="video-page-player">
+                        <div class="video-page-placeholder" id="video-placeholder">
+                            <div class="placeholder-icon">🎬</div>
+                            <h3>Выберите аниме для просмотра</h3>
+                            <p>Перейдите в каталог и нажмите "Смотреть аниме" на любом тайтле</p>
+                            <a href="catalog.html" class="btn btn-explore">Перейти в каталог</a>
+                        </div>
+                    </div>
+                    
+                    <div class="player-page-controls">
+                        <div class="control-group">
+                            <div class="episode-selector">
+                                <label for="episode-select">Эпизод:</label>
+                                <select id="episode-select">
+                                    <option value="">Выберите эпизод</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="control-group">
+                            <button class="btn-primary" id="play-btn">
+                                ▶ Воспроизвести
+                            </button>
+                            <button class="btn-secondary" id="fullscreen-btn">
+                                ⛶ Полный экран
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="player-page-info">
+                    <div class="info-header">
+                        <h2 id="player-title">Название аниме</h2>
+                        <div class="player-stats">
+                            <div class="stat">
+                                <span class="icon">★</span>
+                                <span id="player-rating">0.0</span>
+                            </div>
+                            <div class="stat">
+                                <span class="icon">📅</span>
+                                <span id="player-year">0000</span>
+                            </div>
+                            <div class="stat">
+                                <span class="icon">🎬</span>
+                                <span id="player-episodes">0 эп.</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="info-content">
+                        <p id="player-description">Описание аниме появится здесь после выбора</p>
+                        
+                        <div class="anime-details">
+                            <div class="detail-item">
+                                <strong>Жанр:</strong>
+                                <span id="player-genre">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Статус:</strong>
+                                <span id="player-status">-</span>
+                            </div>
+                            <div class="detail-item">
+                                <strong>Студия:</strong>
+                                <span id="player-studio">-</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="episodes-list" id="episodes-list">
+                    <h3>Все эпизоды</h3>
+                    <div class="episodes-grid" id="episodes-grid">
+                        <!-- Episodes will be loaded here -->
+                    </div>
+                </div>
+
+                <!-- Player Settings Section -->
+                <div class="player-settings" id="player-settings">
+                    <div class="settings-section">
+                        <h3 class="settings-title">Настройки воспроизведения</h3>
+                        <div class="settings-grid">
+                            <!-- Качество видео -->
+                            <div class="setting-item">
+                                <label class="setting-label">Качество видео</label>
+                                <p class="setting-description">Выберите качество воспроизведения</p>
+                                <div class="quality-selector">
+                                    <button class="quality-btn active" data-quality="auto">Авто</button>
+                                    <button class="quality-btn" data-quality="1080">1080p</button>
+                                    <button class="quality-btn" data-quality="720">720p</button>
+                                    <button class="quality-btn" data-quality="480">480p</button>
+                                </div>
+                            </div>
+
+                            <!-- Скорость воспроизведения -->
+                            <div class="setting-item">
+                                <label class="setting-label">Скорость воспроизведения</label>
+                                <p class="setting-description">Измените скорость видео</p>
+                                <div class="speed-selector">
+                                    <button class="speed-btn" data-speed="0.5">0.5x</button>
+                                    <button class="speed-btn" data-speed="0.75">0.75x</button>
+                                    <button class="speed-btn active" data-speed="1">1x</button>
+                                    <button class="speed-btn" data-speed="1.25">1.25x</button>
+                                    <button class="speed-btn" data-speed="1.5">1.5x</button>
+                                    <button class="speed-btn" data-speed="2">2x</button>
+                                </div>
+                            </div>
+
+                            <!-- Громкость -->
+                            <div class="setting-item">
+                                <label class="setting-label">Громкость</label>
+                                <p class="setting-description">Регулировка уровня громкости</p>
+                                <div class="volume-control">
+                                    <span class="volume-icon">🔇</span>
+                                    <input type="range" class="volume-slider" min="0" max="100" value="80">
+                                    <span class="volume-icon">🔊</span>
+                                    <span class="volume-value">80%</span>
+                                </div>
+                            </div>
+
+                            <!-- Субтитры -->
+                            <div class="setting-item">
+                                <label class="setting-label">Субтитры</label>
+                                <p class="setting-description">Настройки отображения субтитров</p>
+                                <div class="subtitle-settings">
+                                    <select class="subtitle-select">
+                                        <option value="none">Выключены</option>
+                                        <option value="ru">Русский</option>
+                                        <option value="en">English</option>
+                                        <option value="jp">日本語</option>
+                                    </select>
+                                    <div class="subtitle-size">
+                                        <span>Размер:</span>
+                                        <input type="range" class="size-slider" min="12" max="24" value="16">
+                                        <span class="size-value">16px</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="settings-title">Горячие клавиши</h3>
+                        <div class="shortcuts-list">
+                            <div class="shortcut-item">
+                                <span class="shortcut-description">Пауза/воспроизведение</span>
+                                <kbd class="shortcut-key">Пробел</kbd>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-description">Полный экран</span>
+                                <kbd class="shortcut-key">F</kbd>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-description">Перемотка назад</span>
+                                <kbd class="shortcut-key">←</kbd>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-description">Перемотка вперед</span>
+                                <kbd class="shortcut-key">→</kbd>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-description">Увеличить громкость</span>
+                                <kbd class="shortcut-key">↑</kbd>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-description">Уменьшить громкость</span>
+                                <kbd class="shortcut-key">↓</kbd>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-description">Следующий эпизод</span>
+                                <kbd class="shortcut-key">N</kbd>
+                            </div>
+                            <div class="shortcut-item">
+                                <span class="shortcut-description">Мини-плеер</span>
+                                <kbd class="shortcut-key">M</kbd>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-section">
+                        <h3 class="settings-title">Дополнительные настройки</h3>
+                        <div class="settings-grid">
+                            <div class="setting-item">
+                                <label class="setting-label">Автовоспроизведение</label>
+                                <p class="setting-description">Автоматически воспроизводить следующий эпизод</p>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label class="setting-label">Мини-плеер</label>
+                                <p class="setting-description">Показывать мини-плеер при скролле</p>
+                                <label class="toggle-switch">
+                                    <input type="checkbox">
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label class="setting-label">Темная тема</label>
+                                <p class="setting-description">Всегда использовать темную тему</p>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                            <div class="setting-item">
+                                <label class="setting-label">Кадрирование</label>
+                                <p class="setting-description">Автоматически подстраивать под экран</p>
+                                <label class="toggle-switch">
+                                    <input type="checkbox" checked>
+                                    <span class="toggle-slider"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="settings-actions">
+                        <button class="btn-reset" id="reset-settings">Сбросить настройки</button>
+                        <button class="btn-apply" id="apply-settings">Применить настройки</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>О нас</h3>
+                    <ul>
+                        <li><a href="#">О компании</a></li>
+                        <li><a href="#">Команда</a></li>
+                        <li><a href="#">Карьера</a></li>
+                        <li><a href="#">Новости</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Разделы</h3>
+                    <ul>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="#">Новинки</a></li>
+                        <li><a href="#">Топ-100</a></li>
+                        <li><a href="#">Жанры</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Поддержка</h3>
+                    <ul>
+                        <li><a href="#">Помощь</a></li>
+                        <li><a href="#">Контакты</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Сообщить о проблеме</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Правовая информация</h3>
+                    <ul>
+                        <li><a href="#">Условия использования</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                        <li><a href="#">Cookie</a></li>
+                        <li><a href="#">Авторские права</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2025 АнимеПлатформа. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Конфигурация и утилиты -->
+    <script src="config.js"></script>
+    <script src="utils/error-handler.js"></script>
+    <script src="utils/helpers.js"></script>
+    
+    <!-- Компоненты -->
+    <script src="components/Notification.js"></script>
+    
+    <!-- Сервисы -->
+    <script src="services/auth-service.js"></script>
+    <script src="services/anime-service.js"></script>
+    <script src="services/anime-api.js"></script>
+    <script src="services/video-service.js"></script>
+    
+    <!-- Существующие скрипты (для обратной совместимости) -->
+    <script src="database.js"></script>
+    <script src="anime-data.js"></script>
+    <script src="main.js"></script>
+    <script src="auth.js"></script>
+    <script src="theme.js"></script>
+    <script src="player-page.js"></script>
+</body>
+</html>
+
+

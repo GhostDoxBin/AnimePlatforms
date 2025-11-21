@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль | Аниме-платформа</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">Аниме<span>Платформа</span></a>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="player.html">Плеер</a></li>
+                        <li><a href="ratings.html">Рейтинги</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-controls">
+                    <button id="theme-toggle" class="btn-theme">🌙</button>
+                    <div class="auth-buttons">
+                        <!-- Будет заполнено через JavaScript -->
+                    </div>
+                    <div id="admin-link" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Profile Content -->
+    <section class="container">
+        <div class="profile-container">
+            <div class="profile-sidebar">
+                <div class="profile-avatar">
+                    <img src="https://via.placeholder.com/150" alt="Аватар" class="avatar-image" id="avatar-image">
+                    <button class="btn-change-avatar" id="change-avatar-btn">Изменить аватар</button>
+                    <input type="file" id="avatar-input" accept="image/*" style="display: none;">
+                </div>
+                <ul class="profile-menu">
+                    <li><a href="#" class="profile-menu-link active" data-section="profile-info">Личная информация</a></li>
+                    <li><a href="#" class="profile-menu-link" data-section="profile-security">Безопасность</a></li>
+                    <li><a href="#" class="profile-menu-link" data-section="profile-preferences">Настройки</a></li>
+                </ul>
+            </div>
+            <div class="profile-content">
+                <!-- Profile Info Section -->
+                <div class="profile-section active" id="profile-info">
+                    <h3 class="profile-section-title">Личная информация</h3>
+                    <form id="profile-info-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label" for="profile-username">Имя пользователя</label>
+                                <input type="text" id="profile-username" class="form-input" value="AnimeLover123">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="profile-display-name">Отображаемое имя</label>
+                                <input type="text" id="profile-display-name" class="form-input" value="АнимеФан">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profile-email">Email *</label>
+                            <input type="email" id="profile-email" class="form-input" value="user@example.com" required>
+                            <div class="error-message" id="profile-email-error">Пожалуйста, введите корректный email</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profile-bio">О себе</label>
+                            <textarea id="profile-bio" class="form-input" rows="4" placeholder="Расскажите о себе">Люблю смотреть аниме, особенно жанр сёнен и фэнтези. Мои любимые аниме: Атака Титанов, Истребитель Демонов и Наруто.</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-save">Сохранить изменения</button>
+                    </form>
+                </div>
+                
+                <!-- Security Section -->
+                <div class="profile-section" id="profile-security">
+                    <h3 class="profile-section-title">Безопасность</h3>
+                    <form id="profile-security-form">
+                        <div class="form-group">
+                            <label class="form-label" for="profile-current-password">Текущий пароль</label>
+                            <input type="password" id="profile-current-password" class="form-input" placeholder="Введите текущий пароль">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profile-new-password">Новый пароль</label>
+                            <input type="password" id="profile-new-password" class="form-input" placeholder="Введите новый пароль">
+                            <div class="error-message" id="profile-new-password-error">Пароль должен содержать не менее 6 символов</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profile-confirm-password">Подтвердите новый пароль</label>
+                            <input type="password" id="profile-confirm-password" class="form-input" placeholder="Повторите новый пароль">
+                            <div class="error-message" id="profile-confirm-password-error">Пароли не совпадают</div>
+                        </div>
+                        <button type="submit" class="btn btn-save">Изменить пароль</button>
+                    </form>
+                </div>
+                
+                <!-- Preferences Section -->
+                <div class="profile-section" id="profile-preferences">
+                    <h3 class="profile-section-title">Настройки</h3>
+                    <form id="profile-preferences-form">
+                        <div class="form-group">
+                            <label class="form-label">Язык интерфейса</label>
+                            <select class="form-input" id="profile-language">
+                                <option value="ru" selected>Русский</option>
+                                <option value="en">English</option>
+                                <option value="jp">日本語</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Тема</label>
+                            <select class="form-input" id="profile-theme">
+                                <option value="dark" selected>Тёмная</option>
+                                <option value="light">Светлая</option>
+                                <option value="auto">Системная</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Уведомления</label>
+                            <div style="margin-top: 10px;">
+                                <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                                    <input type="checkbox" id="profile-notifications-email" checked>
+                                    <span style="margin-left: 10px;">Email уведомления</span>
+                                </label>
+                                <label style="display: flex; align-items: center; margin-bottom: 10px;">
+                                    <input type="checkbox" id="profile-notifications-push" checked>
+                                    <span style="margin-left: 10px;">Push уведомления</span>
+                                </label>
+                                <label style="display: flex; align-items: center;">
+                                    <input type="checkbox" id="profile-notifications-newsletter">
+                                    <span style="margin-left: 10px;">Рассылка новостей</span>
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-save">Сохранить настройки</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>О нас</h3>
+                    <ul>
+                        <li><a href="#">О компании</a></li>
+                        <li><a href="#">Команда</a></li>
+                        <li><a href="#">Карьера</a></li>
+                        <li><a href="#">Новости</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Разделы</h3>
+                    <ul>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="ratings.html">Рейтинги</a></li>
+                        <li><a href="#">Топ-100</a></li>
+                        <li><a href="#">Жанры</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Поддержка</h3>
+                    <ul>
+                        <li><a href="#">Помощь</a></li>
+                        <li><a href="#">Контакты</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Сообщить о проблеме</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Правовая информация</h3>
+                    <ul>
+                        <li><a href="#">Условия использования</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                        <li><a href="#">Cookie</a></li>
+                        <li><a href="#">Авторские права</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 АнимеПлатформа. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Конфигурация и утилиты -->
+    <script src="config.js"></script>
+    <script src="utils/error-handler.js"></script>
+    <script src="utils/helpers.js"></script>
+    
+    <!-- Компоненты -->
+    <script src="components/Notification.js"></script>
+    
+    <!-- Сервисы -->
+    <script src="services/auth-service.js"></script>
+    <script src="services/anime-service.js"></script>
+    
+    <!-- Существующие скрипты (для обратной совместимости) -->
+    <script src="database.js"></script>
+    <script src="auth.js"></script>
+    <script src="main.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>

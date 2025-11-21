@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>АнимеПлатформа | Главная</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="theme.css">
+</head>
+<body data-theme="dark">
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">Аниме<span>Платформа</span></a>
+                <nav>
+                    <ul>
+                        
+                        <li><a href="index.html" class="active">Главная</a></li>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="player.html">Плеер</a></li>
+                        <li><a href="ratings.html">Рейтинги</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-controls">
+                    <button id="theme-toggle" class="btn-theme">🌙</button>
+                    <div class="auth-buttons">
+                        <!-- Будет заполнено через JavaScript -->
+                    </div>
+                    <div id="admin-link" style="display: none;"></div>
+                        <!-- Будет заполнено через JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Откройте мир аниме</h1>
+            <p>Лучшие аниме-сервисы в одном месте. Исследуйте, открывайте и наслаждайтесь!</p>
+            <a href="catalog.html" class="btn btn-explore">Начать просмотр</a>
+        </div>
+    </section>
+
+    <!-- Popular Anime Section -->
+    <section class="container">
+        <h2 class="section-title">Популярные Аниме</h2>
+        <div class="anime-grid" id="popular-anime">
+            <!-- Anime cards will be loaded by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>О нас</h3>
+                    <ul>
+                        <li><a href="#">О компании</a></li>
+                        <li><a href="#">Команда</a></li>
+                        <li><a href="#">Карьера</a></li>
+                        <li><a href="#">Новости</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Разделы</h3>
+                    <ul>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="#">Новинки</a></li>
+                        <li><a href="#">Топ-100</a></li>
+                        <li><a href="#">Жанры</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Поддержка</h3>
+                    <ul>
+                        <li><a href="#">Помощь</a></li>
+                        <li><a href="#">Контакты</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Сообщить о проблеме</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Правовая информация</h3>
+                    <ul>
+                        <li><a href="#">Условия использования</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                        <li><a href="#">Cookie</a></li>
+                        <li><a href="#">Авторские права</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 АнимеПлатформа. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Anime Modal -->
+    <div class="modal-overlay" id="anime-modal">
+        <div class="modal">
+            <button class="close-modal" id="close-modal">&times;</button>
+            <div class="modal-content">
+                <div class="modal-poster">
+                    <img src="" alt="Постер аниме" id="modal-poster">
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-title">Название аниме</h2>
+                    <div class="modal-rating" id="modal-rating">
+                        <span class="icon">★</span>
+                        Рейтинг: 0.0
+                    </div>
+                    <div class="modal-year" id="modal-year">
+                        <span class="icon">📅</span>
+                        Год: 0000
+                    </div>
+                    <div class="modal-episodes" id="modal-episodes">
+                        <span class="icon">🎬</span>
+                        Эпизоды: 0
+                    </div>
+                    <div class="modal-genre" id="modal-genre">
+                        <span class="icon">🏷️</span>
+                        Жанр: -
+                    </div>
+                    <div class="modal-description" id="modal-description">Описание аниме</div>
+                    <div class="modal-actions">
+                        <button class="btn-watch-modal" id="watch-btn">
+                            <span class="icon">▶️</span>
+                            Смотреть аниме
+                        </button>
+                        <button class="btn-favorite" id="favorite-btn">
+                            <span class="icon">★</span>
+                            В избранное
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Overlay -->
+    <div class="player-overlay" id="player-overlay">
+        <div class="player-container">
+            <div class="player-header">
+                <div class="player-title" id="player-title">Плеер аниме</div>
+                <button class="close-player" id="close-player">&times;</button>
+            </div>
+            <div class="video-container">
+                <div id="player-frame" class="video-player">
+                    <div class="video-placeholder" id="video-placeholder">
+                        <div class="placeholder-icon">🎬</div>
+                        <h3>Выберите аниме для просмотра</h3>
+                        <p>Перейдите в каталог и нажмите "Смотреть аниме" на любом тайтле</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Конфигурация и утилиты -->
+    <script src="config.js"></script>
+    <script src="utils/error-handler.js"></script>
+    <script src="utils/helpers.js"></script>
+    
+    <!-- Компоненты -->
+    <script src="components/AnimeCard.js"></script>
+    <script src="components/Notification.js"></script>
+    
+    <!-- Сервисы -->
+    <script src="services/auth-service.js"></script>
+    <script src="services/anime-service.js"></script>
+    <script src="services/anime-api.js"></script>
+    
+    <!-- Существующие скрипты (для обратной совместимости) -->
+    <script src="database.js"></script>
+    <script src="anime-data.js"></script>
+    <script src="auth.js"></script>
+    <script src="player.js"></script>
+    <script src="modal.js"></script>
+    <script src="main.js"></script>
+    <script src="theme.js"></script>
+</body>
+</html>

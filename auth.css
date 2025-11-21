@@ -1,0 +1,127 @@
+/* Auth Pages Styles */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 40px 0;
+}
+
+.auth-form {
+    background: #1a2332;
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 500px;
+    border: 1px solid #2a3a52;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.auth-title {
+    font-size: 28px;
+    margin-bottom: 30px;
+    text-align: center;
+    color: #e1e7ef;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: #b8c1cc;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 12px 15px;
+    background: #0f1419;
+    border: 1px solid #2a3a52;
+    border-radius: 6px;
+    color: #e1e7ef;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #6c8cff;
+}
+
+.form-input.error {
+    border-color: #ff6b9c;
+}
+
+.error-message {
+    color: #ff6b9c;
+    font-size: 14px;
+    margin-top: 5px;
+    display: none;
+}
+
+.btn-submit {
+    background: linear-gradient(90deg, #ff6b9c, #6c8cff);
+    color: white;
+    width: 100%;
+    padding: 12px;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(108, 140, 255, 0.3);
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 20px;
+    color: #b8c1cc;
+}
+
+.auth-link a {
+    color: #6c8cff;
+    text-decoration: none;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design for Auth Pages */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 20px 0;
+    }
+    
+    .auth-form {
+        padding: 30px 20px;
+        margin: 0 10px;
+    }
+    
+    .auth-title {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 480px) {
+    .auth-form {
+        padding: 20px 15px;
+    }
+    
+    .form-input {
+        padding: 10px 12px;
+    }
+    
+    .btn-submit {
+        padding: 10px;
+    }
+}

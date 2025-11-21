@@ -1,0 +1,33 @@
+/* Theme-specific styles that extend main styles */
+.theme-transition * {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Light theme specific adjustments */
+[data-theme="light"] .hero {
+    background: linear-gradient(rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.85)), 
+                url('https://cdn-0001.qstv.on.epicgames.com/06PgenlekVXk6yzCPCnvhh/image.jpg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+}
+
+[data-theme="light"] .hero::before {
+    background: linear-gradient(135deg, rgba(229, 62, 62, 0.1), rgba(49, 130, 206, 0.1));
+}
+
+[data-theme="light"] .anime-card {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .anime-card:hover {
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+[data-theme="light"] .modal {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="light"] .player-container {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}

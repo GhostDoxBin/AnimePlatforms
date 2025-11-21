@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Рейтинги аниме | Аниме-платформа</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="ratings.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <a href="index.html" class="logo">Аниме<span>Платформа</span></a>
+                <nav>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="player.html">Плеер</a></li>
+                        <li><a href="ratings.html" class="active">Рейтинги</a></li>
+                    </ul>
+                </nav>
+                
+                <div class="header-controls">
+                    <button id="theme-toggle" class="btn-theme">🌙</button>
+                    <div class="auth-buttons">
+                        <!-- Будет заполнено через JavaScript -->
+                    </div>
+                    <div id="admin-link" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Ratings Content -->
+    <section class="ratings-section">
+        <div class="container">
+            <div class="ratings-header">
+                <h1 class="ratings-title">Рейтинги аниме</h1>
+                <p class="ratings-subtitle">Топовые аниме по оценкам сообщества</p>
+            </div>
+
+            <div class="ratings-filters">
+                <div class="filter-group">
+                    <label for="time-filter">Период:</label>
+                    <select id="time-filter" class="filter-select">
+                        <option value="all">Все время</option>
+                        <option value="2023">2023 год</option>
+                        <option value="2022">2022 год</option>
+                        <option value="2021">2021 год</option>
+                        <option value="2020">2020 год</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="type-filter">Тип:</label>
+                    <select id="type-filter" class="filter-select">
+                        <option value="all">Все типы</option>
+                        <option value="tv">TV сериалы</option>
+                        <option value="movie">Фильмы</option>
+                        <option value="ova">OVA</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="genre-filter">Жанр:</label>
+                    <select id="genre-filter" class="filter-select">
+                        <option value="all">Все жанры</option>
+                        <option value="Сёнен">Сёнен</option>
+                        <option value="Драма">Драма</option>
+                        <option value="Фэнтези">Фэнтези</option>
+                        <option value="Романтика">Романтика</option>
+                        <option value="Комедия">Комедия</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Top 3 Anime -->
+            <div class="top-anime">
+                <div class="top-item top-1">
+                    <div class="rank-badge">1</div>
+                    <div class="top-poster">
+                        <img src="https://images.unsplash.com/photo-1578632749014-ca77efd052eb?w=300&h=400&fit=crop" alt="Атака титанов">
+                    </div>
+                    <div class="top-info">
+                        <h3>Атака титанов</h3>
+                        <div class="rating-score">9.2</div>
+                        <div class="rating-stars">
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                            <span class="star filled">★</span>
+                        </div>
+                        <p class="votes">1.2M оценок</p>
+                        <button class="btn btn-watch" data-anime-id="2">Смотреть</button>
+                    </div>
+                </div>
+
+                <div class="top-items-row">
+                    <div class="top-item top-2">
+                        <div class="rank-badge">2</div>
+                        <div class="top-poster">
+                            <img src="https://images.unsplash.com/photo-1612036782180-6f0b6cd846fe?w=250&h=350&fit=crop" alt="Магическая битва">
+                        </div>
+                        <div class="top-info">
+                            <h3>Магическая битва</h3>
+                            <div class="rating-score">9.0</div>
+                            <div class="rating-stars">
+                                <span class="star filled">★</span>
+                                <span class="star filled">★</span>
+                                <span class="star filled">★</span>
+                                <span class="star filled">★</span>
+                                <span class="star half">★</span>
+                            </div>
+                            <p class="votes">890K оценок</p>
+                        </div>
+                    </div>
+
+                    <div class="top-item top-3">
+                        <div class="rank-badge">3</div>
+                        <div class="top-poster">
+                            <img src="https://images.unsplash.com/photo-1636516449936-4ffc70b756ff?w=250&h=350&fit=crop" alt="Ван Пис">
+                        </div>
+                        <div class="top-info">
+                            <h3>Ван Пис</h3>
+                            <div class="rating-score">8.9</div>
+                            <div class="rating-stars">
+                                <span class="star filled">★</span>
+                                <span class="star filled">★</span>
+                                <span class="star filled">★</span>
+                                <span class="star filled">★</span>
+                                <span class="star half">★</span>
+                            </div>
+                            <p class="votes">950K оценок</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ratings Table -->
+            <div class="ratings-table-container">
+                <div class="table-header">
+                    <h2>Топ 100 аниме</h2>
+                    <div class="table-actions">
+                        <button class="btn btn-export" id="export-btn">
+                            <span class="icon icon-download"></span>
+                            Экспорт
+                        </button>
+                    </div>
+                </div>
+
+                <div class="ratings-table">
+                    <div class="table-row header-row">
+                        <div class="rank-col">#</div>
+                        <div class="title-col">Название</div>
+                        <div class="rating-col">Рейтинг</div>
+                        <div class="votes-col">Оценки</div>
+                        <div class="year-col">Год</div>
+                        <div class="actions-col">Действия</div>
+                    </div>
+
+                    <div id="ratings-table-body">
+                        <!-- Ratings will be loaded by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="table-footer">
+                    <div class="pagination">
+                        <button class="btn-pagination prev" disabled>
+                            <span class="icon icon-arrow-left"></span>
+                            Назад
+                        </button>
+                        <div class="page-numbers">
+                            <span class="page-number active">1</span>
+                            <span class="page-number">2</span>
+                            <span class="page-number">3</span>
+                            <span class="page-dots">...</span>
+                            <span class="page-number">10</span>
+                        </div>
+                        <button class="btn-pagination next">
+                            Вперед
+                            <span class="icon icon-arrow-right"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Statistics Section -->
+            <div class="statistics-section">
+                <h2>Статистика рейтингов</h2>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-value">15,247</div>
+                        <div class="stat-label">Всего аниме в базе</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-value">8.2</div>
+                        <div class="stat-label">Средний рейтинг</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">👥</div>
+                        <div class="stat-value">2.5M</div>
+                        <div class="stat-label">Всего оценок</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">🎬</div>
+                        <div class="stat-value">284</div>
+                        <div class="stat-label">Аниме с рейтингом 9+</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>О нас</h3>
+                    <ul>
+                        <li><a href="#">О компании</a></li>
+                        <li><a href="#">Команда</a></li>
+                        <li><a href="#">Карьера</a></li>
+                        <li><a href="#">Новости</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Разделы</h3>
+                    <ul>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="ratings.html">Рейтинги</a></li>
+                        <li><a href="#">Топ-100</a></li>
+                        <li><a href="#">Жанры</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Поддержка</h3>
+                    <ul>
+                        <li><a href="#">Помощь</a></li>
+                        <li><a href="#">Контакты</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Сообщить о проблеме</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Правовая информация</h3>
+                    <ul>
+                        <li><a href="#">Условия использования</a></li>
+                        <li><a href="#">Политика конфиденциальности</a></li>
+                        <li><a href="#">Cookie</a></li>
+                        <li><a href="#">Авторские права</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                &copy; 2023 АнимеПлатформа. Все права защищены.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Anime Modal -->
+    <div class="modal-overlay" id="anime-modal">
+        <div class="modal">
+            <button class="close-modal" id="close-modal">&times;</button>
+            <div class="modal-content">
+                <div class="modal-poster">
+                    <img src="" alt="Постер аниме" id="modal-poster">
+                </div>
+                <div class="modal-info">
+                    <h2 id="modal-title">Название аниме</h2>
+                    <div class="modal-rating" id="modal-rating">
+                        <span class="icon icon-star"></span>
+                        Рейтинг: 0.0
+                    </div>
+                    <div class="modal-year" id="modal-year">
+                        <span class="icon icon-calendar"></span>
+                        Год: 0000
+                    </div>
+                    <div class="modal-episodes" id="modal-episodes">
+                        <span class="icon icon-film"></span>
+                        Эпизоды: 0
+                    </div>
+                    <div class="modal-genre" id="modal-genre">
+                        <span class="icon icon-tag"></span>
+                        Жанр: -
+                    </div>
+                    <div class="modal-description" id="modal-description">Описание аниме</div>
+                    <div class="modal-actions">
+                        <a href="player.html" class="btn btn-watch" id="watch-btn">
+                            <span class="icon icon-play"></span>
+                            Смотреть аниме
+                        </a>
+                        <button class="btn btn-favorite" id="favorite-btn">
+                            <span class="icon icon-star"></span>
+                            В избранное
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Конфигурация и утилиты -->
+    <script src="config.js"></script>
+    <script src="utils/error-handler.js"></script>
+    <script src="utils/helpers.js"></script>
+    
+    <!-- Компоненты -->
+    <script src="components/Notification.js"></script>
+    
+    <!-- Сервисы -->
+    <script src="services/auth-service.js"></script>
+    <script src="services/anime-service.js"></script>
+    <script src="services/anime-api.js"></script>
+    
+    <!-- Существующие скрипты (для обратной совместимости) -->
+    <script src="database.js"></script>
+    <script src="anime-data.js"></script>
+    <script src="main.js"></script>
+    <script src="modal.js"></script>
+    <script src="ratings.js"></script>
+</body>
+</html>
