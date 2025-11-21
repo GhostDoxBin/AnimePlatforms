@@ -97,6 +97,62 @@ class ProfileManager {
 
         // Навигация по разделам
         this.setupProfileNavigation();
+
+        // Синхронизация устройств из профиля
+        this.setupProfileSync();
+    }
+
+    setupProfileSync() {
+        if (!window.syncService) return;
+
+        const syncBtn = document.getElementById('profile-sync-btn');
+        const syncModal = document.getElementById('profile-sync-modal');
+        const closeSyncModalBtn = document.getElementById('close-profile-sync-modal');
+        const qrImage = document.getElementById('profile-sync-qr-image');
+        const linkText = document.getElementById('profile-sync-link-text');
+        const copyLinkBtn = document.getElementById('profile-copy-sync-link-btn');
+
+        if (syncBtn && syncModal && qrImage && linkText) {
+            syncBtn.addEventListener('click', () => {
+                const qrData = window.syncService.generateQRCode();
+                qrImage.src = qrData.qrUrl;
+                linkText.textContent = qrData.url;
+                syncModal.classList.add('active');
+            });
+        }
+
+        if (closeSyncModalBtn && syncModal) {
+            closeSyncModalBtn.addEventListener('click', () => {
+                syncModal.classList.remove('active');
+            });
+        }
+
+        if (syncModal) {
+            syncModal.addEventListener('click', (e) => {
+                if (e.target === syncModal) {
+                    syncModal.classList.remove('active');
+                }
+            });
+        }
+
+        if (copyLinkBtn && linkText) {
+            copyLinkBtn.addEventListener('click', () => {
+                const text = linkText.textContent;
+                if (!text) return;
+
+                navigator.clipboard.writeText(text).then(() => {
+                    this.showNotification('Ссылка на синхронизацию скопирована!', 'success');
+                }).catch(() => {
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    this.showNotification('Ссылка на синхронизацию скопирована!', 'success');
+                });
+            });
+        }
     }
 
     setupProfileNavigation() {

@@ -22,16 +22,24 @@
                         <li><a href="catalog.html">Каталог</a></li>
                         <li><a href="player.html">Плеер</a></li>
                         <li><a href="ratings.html">Рейтинги</a></li>
+
+                        <!-- Дополнительные пункты, которые на мобильном прячутся в меню -->
+                        <li class="nav-extra nav-theme">
+                            <button id="theme-toggle" class="btn-theme">🌙</button>
+                        </li>
+                        <li class="nav-extra nav-auth">
+                            <div class="auth-buttons">
+                                <!-- Будет заполнено через JavaScript -->
+                            </div>
+                        </li>
+                        <li class="nav-extra nav-admin">
+                            <div id="admin-link" style="display: none;"></div>
+                        </li>
+                        <li class="nav-extra nav-sync">
+                            <a href="#sync" class="nav-sync-link">Синхронизация</a>
+                        </li>
                     </ul>
                 </nav>
-                
-                <div class="header-controls">
-                    <button id="theme-toggle" class="btn-theme">🌙</button>
-                    <div class="auth-buttons">
-                        <!-- Будет заполнено через JavaScript -->
-                    </div>
-                    <div id="admin-link" style="display: none;"></div>
-                </div>
             </div>
         </div>
     </header>
@@ -140,10 +148,46 @@
                         </div>
                         <button type="submit" class="btn btn-save">Сохранить настройки</button>
                     </form>
+
+                    <!-- Секция синхронизации устройств -->
+                    <div id="sync" class="profile-sync-section" style="margin-top: 40px;">
+                        <h3 class="profile-section-title" style="margin-top: 0;">Синхронизация устройств</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 15px;">
+                            Синхронизируйте список аниме между ПК и телефоном с помощью QR-кода.
+                        </p>
+                        <p style="color: var(--text-secondary); margin-bottom: 20px; font-size: 14px;">
+                            На ПК вы можете открыть админ-панель и создать QR-код для синхронизации. 
+                            На телефоне откройте это меню (или раздел профиля) и воспользуйтесь встроенной синхронизацией.
+                        </p>
+                        <button type="button" class="btn btn-save" id="profile-sync-btn">
+                            📱 Показать QR-код для синхронизации
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Модальное окно QR-синхронизации в профиле -->
+    <div class="modal-overlay" id="profile-sync-modal">
+        <div class="modal">
+            <button class="close-modal" id="close-profile-sync-modal">&times;</button>
+            <div class="modal-content">
+                <div class="modal-info" style="width: 100%; text-align: center;">
+                    <h2 style="margin-bottom: 10px;">Синхронизация устройств</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                        Откройте этот QR-код на одном устройстве и отсканируйте его камерой другого устройства,
+                        чтобы перенести каталог аниме.
+                    </p>
+                    <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                        <img id="profile-sync-qr-image" src="" alt="QR код" style="max-width: 260px; border-radius: 8px;">
+                        <p id="profile-sync-link-text" style="font-size: 12px; color: var(--text-secondary); word-break: break-all;"></p>
+                        <button class="btn btn-login" id="profile-copy-sync-link-btn">📋 Копировать ссылку</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Footer -->
     <footer>

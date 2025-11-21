@@ -188,13 +188,26 @@ class AdminPanel {
         const closeSyncBtn = document.getElementById('close-sync-modal-btn');
         if (closeSyncBtn) {
             closeSyncBtn.addEventListener('click', () => {
-                document.getElementById('sync-qr-container').style.display = 'none';
+                const modal = document.getElementById('sync-qr-modal');
+                if (modal) {
+                    modal.classList.remove('active');
+                }
             });
         }
 
         const copyLinkBtn = document.getElementById('copy-sync-link-btn');
         if (copyLinkBtn) {
             copyLinkBtn.addEventListener('click', () => this.copySyncLink());
+        }
+
+        // Закрытие модального окна быстрой синхронизации при клике по фону
+        const syncModal = document.getElementById('sync-qr-modal');
+        if (syncModal) {
+            syncModal.addEventListener('click', (e) => {
+                if (e.target === syncModal) {
+                    syncModal.classList.remove('active');
+                }
+            });
         }
     }
 
@@ -1148,14 +1161,15 @@ class AdminPanel {
         }
 
         const qrData = window.syncService.generateQRCode();
+        const modal = document.getElementById('sync-qr-modal');
         const container = document.getElementById('sync-qr-container');
         const qrImage = document.getElementById('sync-qr-image');
         const linkText = document.getElementById('sync-link-text');
 
-        if (container && qrImage && linkText) {
+        if (modal && container && qrImage && linkText) {
             qrImage.src = qrData.qrUrl;
             linkText.textContent = qrData.url;
-            container.style.display = 'block';
+            modal.classList.add('active');
             this.showNotification('QR-код готов! Отсканируйте на телефоне', 'success');
         }
     }

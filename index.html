@@ -15,7 +15,7 @@
     <header>
         <div class="container">
             <div class="header-content">
-                 <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Меню">☰</button>
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Меню">☰</button>
                 <a href="index.html" class="logo">Аниме<span>Платформа</span></a>
                 <nav id="main-nav">
                     <ul>
@@ -23,17 +23,24 @@
                         <li><a href="catalog.html">Каталог</a></li>
                         <li><a href="player.html">Плеер</a></li>
                         <li><a href="ratings.html">Рейтинги</a></li>
+
+                        <!-- Дополнительные пункты, которые на мобильном прячутся в меню -->
+                        <li class="nav-extra nav-theme">
+                            <button id="theme-toggle" class="btn-theme">🌙</button>
+                        </li>
+                        <li class="nav-extra nav-auth">
+                            <div class="auth-buttons">
+                                <!-- Будет заполнено через JavaScript -->
+                            </div>
+                        </li>
+                        <li class="nav-extra nav-admin">
+                            <div id="admin-link" style="display: none;"></div>
+                        </li>
+                        <li class="nav-extra nav-sync">
+                            <a href="profile.html#sync" class="nav-sync-link">Синхронизация</a>
+                        </li>
                     </ul>
                 </nav>
-                
-                <div class="header-controls">
-                    <button id="theme-toggle" class="btn-theme">🌙</button>
-                    <div class="auth-buttons">
-                        <!-- Будет заполнено через JavaScript -->
-                    </div>
-                    <div id="admin-link" style="display: none;"></div>
-                </div>
-            </div>
             </div>
         </div>
     </header>

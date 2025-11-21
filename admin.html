@@ -16,22 +16,32 @@
     <header>
         <div class="container">
             <div class="header-content">
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Меню">☰</button>
                 <a href="index.html" class="logo">Аниме<span>Платформа</span></a>
-                <nav>
+                <nav id="main-nav">
                     <ul>
                         <li><a href="index.html">Главная</a></li>
                         <li><a href="catalog.html">Каталог</a></li>
                         <li><a href="player.html">Плеер</a></li>
                         <li><a href="ratings.html">Рейтинги</a></li>
                         <li><a href="admin.html" class="active">Админ-панель</a></li>
+
+                        <!-- Дополнительные пункты, которые на мобильном прячутся в меню -->
+                        <li class="nav-extra nav-theme">
+                            <button id="theme-toggle" class="btn-theme">🌙</button>
+                        </li>
+                        <li class="nav-extra nav-auth">
+                            <div class="auth-buttons">
+                                <!-- Будет заполнено через JavaScript -->
+                            </div>
+                        </li>
+                        <li class="nav-extra nav-sync">
+                            <a href="profile.html#sync" class="nav-sync-link">Синхронизация</a>
+                        </li>
                     </ul>
                 </nav>
-                
-                <div class="header-controls">
-                    <button id="theme-toggle" class="btn-theme">🌙</button>
-                    <div class="auth-buttons">
-                        <!-- Будет заполнено через JavaScript -->
-                    </div>
+
+                <div class="header-controls" style="margin-left: 10px;">
                     <div id="admin-profile-controls" style="display: none;">
                         <a href="profile.html" class="btn btn-profile" id="admin-profile-btn">
                             <img src="" alt="Аватар" class="profile-avatar" id="admin-avatar">
@@ -137,13 +147,6 @@
                             <button class="btn btn-secondary" id="import-data-btn">📤 Импорт данных</button>
                             <input type="file" id="import-file-input" accept=".json" style="display: none;">
                         </div>
-                        <div id="sync-qr-container" style="display: none; margin-top: 20px; text-align: center; padding: 20px; background: var(--bg-secondary); border-radius: 8px;">
-                            <h3 style="margin-bottom: 15px; color: var(--text-primary);">📱 Сканируйте QR-код на телефоне</h3>
-                            <img id="sync-qr-image" src="" alt="QR код" style="max-width: 300px; border-radius: 8px; margin-bottom: 15px;">
-                            <p style="color: var(--text-secondary); margin-bottom: 10px; word-break: break-all; font-size: 12px;" id="sync-link-text"></p>
-                            <button class="btn btn-secondary" id="copy-sync-link-btn">📋 Копировать ссылку</button>
-                            <button class="btn btn-secondary" id="close-sync-modal-btn" style="margin-left: 10px;">✕ Закрыть</button>
-                        </div>
                     </div>
                     
                     <div class="stats-grid">
@@ -187,6 +190,27 @@
             </div>
         </div>
     </section>
+
+    <!-- Модальное окно быстрой синхронизации для админ-панели -->
+    <div class="modal-overlay" id="sync-qr-modal">
+        <div class="modal">
+            <button class="close-modal" id="close-sync-modal-btn">&times;</button>
+            <div class="modal-content">
+                <div class="modal-info" style="width: 100%; text-align: center;">
+                    <h2 style="margin-bottom: 10px;">Быстрая синхронизация</h2>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                        Откройте админ-панель на ПК и отсканируйте этот QR-код камерой телефона,
+                        чтобы перенести каталог аниме.
+                    </p>
+                    <div id="sync-qr-container" style="margin-top: 10px; text-align: center;">
+                        <img id="sync-qr-image" src="" alt="QR код" style="max-width: 300px; border-radius: 8px; margin-bottom: 15px;">
+                        <p style="color: var(--text-secondary); margin-bottom: 10px; word-break: break-all; font-size: 12px;" id="sync-link-text"></p>
+                        <button class="btn btn-secondary" id="copy-sync-link-btn">📋 Копировать ссылку</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Anime Form Modal -->
     <div class="modal-overlay" id="anime-form">

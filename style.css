@@ -286,6 +286,34 @@
         box-sizing: border-box;
     }
 
+    /* Дополнительные элементы навигации (тема, авторизация, синхронизация) */
+    .nav-extra {
+        display: flex;
+        align-items: center;
+    }
+
+    .nav-sync-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        border-radius: 25px;
+        text-decoration: none;
+        color: #b8c1cc;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        font-size: 15px;
+        min-height: 48px;
+        height: 48px;
+        min-width: 48px;
+        white-space: nowrap;
+    }
+
+    .nav-sync-link:hover {
+        color: #ff6b9c;
+        background: rgba(255, 107, 156, 0.1);
+    }
+
     @keyframes navLinkPulse {
         0%, 100% {
             opacity: 1;
@@ -1385,13 +1413,34 @@
             width: 100%;
         }
 
-        nav ul li a {
+        nav ul li a,
+        .nav-sync-link {
             width: 100%;
             padding: 15px 20px;
             border-radius: 0;
             justify-content: flex-start;
             min-width: auto;
             border-bottom: 1px solid var(--border-color);
+        }
+
+        .nav-extra.nav-theme,
+        .nav-extra.nav-auth,
+        .nav-extra.nav-sync {
+            padding: 0 20px;
+        }
+
+        .nav-extra.nav-auth .auth-buttons {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .nav-extra.nav-auth .btn,
+        .nav-extra.nav-auth .btn-login,
+        .nav-extra.nav-auth .btn-signup {
+            width: 100%;
+            justify-content: center;
         }
 
         .header-content {
