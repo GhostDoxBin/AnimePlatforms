@@ -105,9 +105,33 @@ class ProfileManager {
     setupProfileSync() {
         if (!window.syncService) return;
 
+        const syncNowBtn = document.getElementById('profile-sync-now-btn');
         const exportBtn = document.getElementById('profile-export-btn');
         const importBtn = document.getElementById('profile-import-btn');
         const importInput = document.getElementById('profile-import-file-input');
+
+        // Кнопка синхронизации сейчас
+        if (syncNowBtn) {
+            syncNowBtn.addEventListener('click', async () => {
+                try {
+                    this.showNotification('Синхронизация начата...', 'success');
+                    const result = await window.syncService.syncNow();
+                    if (result.success) {
+                        this.showNotification(result.message || 'Данные синхронизированы!', 'success');
+                        this.updateProfileSyncInfo();
+                        // Перезагружаем страницу для обновления данных
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    } else {
+                        this.showNotification('Ошибка синхронизации: ' + (result.error || 'Неизвестная ошибка'), 'error');
+                    }
+                } catch (error) {
+                    console.error('Error syncing:', error);
+                    this.showNotification('Ошибка синхронизации: ' + error.message, 'error');
+                }
+            });
+        }
 
         if (exportBtn) {
             exportBtn.addEventListener('click', () => {
@@ -142,6 +166,7 @@ class ProfileManager {
                             message += ` и ${result.usersCount} пользователей`;
                         }
                         this.showNotification(message + '!', 'success');
+                        this.updateProfileSyncInfo();
                         
                         // Перезагружаем страницу для обновления данных
                         setTimeout(() => {
@@ -156,6 +181,45 @@ class ProfileManager {
                 // Сброс input для возможности повторного выбора
                 e.target.value = '';
             });
+        }
+
+        // Обновление информации о синхронизации
+        this.updateProfileSyncInfo();
+        setInterval(() => this.updateProfileSyncInfo(), 60000); // Обновляем каждую минуту
+    }
+
+    updateProfileSyncInfo() {
+        const syncInfoEl = document.getElementById('profile-sync-info');
+        if (!syncInfoEl || !window.syncService) return;
+
+        try {
+            const lastSyncDate = window.syncService.getLastSyncDate();
+            if (lastSyncDate) {
+                const date = new Date(lastSyncDate);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+
+                let timeText = '';
+                if (diffMins < 1) {
+                    timeText = 'только что';
+                } else if (diffMins < 60) {
+                    timeText = `${diffMins} минут назад`;
+                } else if (diffHours < 24) {
+                    timeText = `${diffHours} часов назад`;
+                } else {
+                    timeText = `${diffDays} дней назад`;
+                }
+
+                syncInfoEl.textContent = `⏱️ Последняя синхронизация: ${timeText} (${date.toLocaleString('ru-RU')})`;
+            } else {
+                syncInfoEl.textContent = '⏱️ Синхронизация еще не выполнялась';
+            }
+        } catch (error) {
+            console.error('Error updating sync info:', error);
+            syncInfoEl.textContent = '⏱️ Не удалось получить информацию о синхронизации';
         }
     }
 

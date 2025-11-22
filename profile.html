@@ -162,6 +162,9 @@
                         экспортируйте файл на одном устройстве и импортируйте его на другом.
                     </p>
                     <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                        <button type="button" class="btn btn-save" id="profile-sync-now-btn">
+                            🔄 Синхронизировать сейчас
+                        </button>
                         <button type="button" class="btn btn-save" id="profile-export-btn">
                             📥 Экспорт данных
                         </button>
@@ -170,6 +173,9 @@
                         </button>
                         <input type="file" id="profile-import-file-input" accept=".json" style="display: none;">
                     </div>
+                    <p id="profile-sync-info" style="color: var(--text-secondary); margin-top: 15px; font-size: 13px; font-style: italic;">
+                        ⏱️ Последняя синхронизация: проверяется...
+                    </p>
                 </div>
             </div>
         </div>

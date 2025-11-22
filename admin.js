@@ -166,6 +166,12 @@ class AdminPanel {
             this.searchUsers(e.target.value);
         });
 
+        // Sync now button
+        const syncNowBtn = document.getElementById('sync-now-btn');
+        if (syncNowBtn) {
+            syncNowBtn.addEventListener('click', () => this.syncNow());
+        }
+
         // Export/Import data
         const exportBtn = document.getElementById('export-data-btn');
         if (exportBtn) {
@@ -178,6 +184,10 @@ class AdminPanel {
             importBtn.addEventListener('click', () => importInput.click());
             importInput.addEventListener('change', (e) => this.importData(e));
         }
+
+        // Обновление информации о синхронизации
+        this.updateSyncInfo();
+        setInterval(() => this.updateSyncInfo(), 60000); // Обновляем каждую минуту
 
     }
 
@@ -1086,6 +1096,76 @@ class AdminPanel {
 
     hideAnimeForm() {
         document.getElementById('anime-form').classList.remove('active');
+    }
+
+    async syncNow() {
+        try {
+            if (!window.syncService) {
+                this.showNotification('Сервис синхронизации не загружен', 'error');
+                return;
+            }
+
+            this.showNotification('Синхронизация начата...', 'success');
+            
+            const result = await window.syncService.syncNow();
+            
+            if (result.success) {
+                this.showNotification(result.message || 'Данные синхронизированы!', 'success');
+                this.loadAnimeList();
+                this.loadUsersList();
+                this.updateStatistics();
+                this.updateSyncInfo();
+            } else {
+                this.showNotification('Ошибка синхронизации: ' + (result.error || 'Неизвестная ошибка'), 'error');
+            }
+        } catch (error) {
+            console.error('Error syncing:', error);
+            this.showNotification('Ошибка синхронизации: ' + error.message, 'error');
+        }
+    }
+
+    updateSyncInfo() {
+        const syncInfoEl = document.getElementById('last-sync-info');
+        if (!syncInfoEl || !window.syncService) return;
+
+        try {
+            const lastSyncDate = window.syncService.getLastSyncDate();
+            if (lastSyncDate) {
+                const date = new Date(lastSyncDate);
+                const now = new Date();
+                const diffMs = now - date;
+                const diffMins = Math.floor(diffMs / 60000);
+                const diffHours = Math.floor(diffMs / 3600000);
+                const diffDays = Math.floor(diffMs / 86400000);
+
+                let timeText = '';
+                if (diffMins < 1) {
+                    timeText = 'только что';
+                } else if (diffMins < 60) {
+                    timeText = `${diffMins} ${this.pluralize(diffMins, 'минуту', 'минуты', 'минут')} назад`;
+                } else if (diffHours < 24) {
+                    timeText = `${diffHours} ${this.pluralize(diffHours, 'час', 'часа', 'часов')} назад`;
+                } else {
+                    timeText = `${diffDays} ${this.pluralize(diffDays, 'день', 'дня', 'дней')} назад`;
+                }
+
+                syncInfoEl.textContent = `⏱️ Последняя синхронизация: ${timeText} (${date.toLocaleString('ru-RU')})`;
+            } else {
+                syncInfoEl.textContent = '⏱️ Синхронизация еще не выполнялась';
+            }
+        } catch (error) {
+            console.error('Error updating sync info:', error);
+            syncInfoEl.textContent = '⏱️ Не удалось получить информацию о синхронизации';
+        }
+    }
+
+    pluralize(count, one, few, many) {
+        const mod10 = count % 10;
+        const mod100 = count % 100;
+        
+        if (mod10 === 1 && mod100 !== 11) return one;
+        if (mod10 >= 2 && mod10 <= 4 && (mod100 < 10 || mod100 >= 20)) return few;
+        return many;
     }
 
 }
