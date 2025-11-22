@@ -105,52 +105,56 @@ class ProfileManager {
     setupProfileSync() {
         if (!window.syncService) return;
 
-        const syncBtn = document.getElementById('profile-sync-btn');
-        const syncModal = document.getElementById('profile-sync-modal');
-        const closeSyncModalBtn = document.getElementById('close-profile-sync-modal');
-        const qrImage = document.getElementById('profile-sync-qr-image');
-        const linkText = document.getElementById('profile-sync-link-text');
-        const copyLinkBtn = document.getElementById('profile-copy-sync-link-btn');
+        const exportBtn = document.getElementById('profile-export-btn');
+        const importBtn = document.getElementById('profile-import-btn');
+        const importInput = document.getElementById('profile-import-file-input');
 
-        if (syncBtn && syncModal && qrImage && linkText) {
-            syncBtn.addEventListener('click', () => {
-                const qrData = window.syncService.generateQRCode();
-                qrImage.src = qrData.qrUrl;
-                linkText.textContent = qrData.url;
-                syncModal.classList.add('active');
-            });
-        }
-
-        if (closeSyncModalBtn && syncModal) {
-            closeSyncModalBtn.addEventListener('click', () => {
-                syncModal.classList.remove('active');
-            });
-        }
-
-        if (syncModal) {
-            syncModal.addEventListener('click', (e) => {
-                if (e.target === syncModal) {
-                    syncModal.classList.remove('active');
+        if (exportBtn) {
+            exportBtn.addEventListener('click', () => {
+                try {
+                    const result = window.syncService.exportToFile();
+                    if (result.success) {
+                        this.showNotification(result.message, 'success');
+                    } else {
+                        this.showNotification('Ошибка экспорта: ' + (result.error || 'Неизвестная ошибка'), 'error');
+                    }
+                } catch (error) {
+                    console.error('Error exporting data:', error);
+                    this.showNotification('Ошибка экспорта данных: ' + error.message, 'error');
                 }
             });
         }
 
-        if (copyLinkBtn && linkText) {
-            copyLinkBtn.addEventListener('click', () => {
-                const text = linkText.textContent;
-                if (!text) return;
+        if (importBtn && importInput) {
+            importBtn.addEventListener('click', () => {
+                importInput.click();
+            });
 
-                navigator.clipboard.writeText(text).then(() => {
-                    this.showNotification('Ссылка на синхронизацию скопирована!', 'success');
-                }).catch(() => {
-                    const textarea = document.createElement('textarea');
-                    textarea.value = text;
-                    document.body.appendChild(textarea);
-                    textarea.select();
-                    document.execCommand('copy');
-                    document.body.removeChild(textarea);
-                    this.showNotification('Ссылка на синхронизацию скопирована!', 'success');
-                });
+            importInput.addEventListener('change', async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                try {
+                    const result = await window.syncService.importFromFile(file);
+                    if (result.success) {
+                        let message = `Успешно импортировано ${result.animeCount} аниме`;
+                        if (result.usersCount > 0) {
+                            message += ` и ${result.usersCount} пользователей`;
+                        }
+                        this.showNotification(message + '!', 'success');
+                        
+                        // Перезагружаем страницу для обновления данных
+                        setTimeout(() => {
+                            window.location.reload();
+                        }, 1500);
+                    }
+                } catch (error) {
+                    console.error('Error importing data:', error);
+                    this.showNotification('Ошибка импорта данных: ' + error.message, 'error');
+                }
+
+                // Сброс input для возможности повторного выбора
+                e.target.value = '';
             });
         }
     }

@@ -179,36 +179,6 @@ class AdminPanel {
             importInput.addEventListener('change', (e) => this.importData(e));
         }
 
-        // Quick sync
-        const quickSyncBtn = document.getElementById('quick-sync-btn');
-        if (quickSyncBtn) {
-            quickSyncBtn.addEventListener('click', () => this.showQuickSync());
-        }
-
-        const closeSyncBtn = document.getElementById('close-sync-modal-btn');
-        if (closeSyncBtn) {
-            closeSyncBtn.addEventListener('click', () => {
-                const modal = document.getElementById('sync-qr-modal');
-                if (modal) {
-                    modal.classList.remove('active');
-                }
-            });
-        }
-
-        const copyLinkBtn = document.getElementById('copy-sync-link-btn');
-        if (copyLinkBtn) {
-            copyLinkBtn.addEventListener('click', () => this.copySyncLink());
-        }
-
-        // Закрытие модального окна быстрой синхронизации при клике по фону
-        const syncModal = document.getElementById('sync-qr-modal');
-        if (syncModal) {
-            syncModal.addEventListener('click', (e) => {
-                if (e.target === syncModal) {
-                    syncModal.classList.remove('active');
-                }
-            });
-        }
     }
 
     switchTab(tabName) {
@@ -1023,91 +993,55 @@ class AdminPanel {
 
     exportData() {
         try {
-            let animeList = [];
-            if (this.animeService) {
-                animeList = this.animeService.getAllAnime();
-            } else if (this.animeData && this.animeData.animeList) {
-                animeList = this.animeData.animeList;
+            if (!window.syncService) {
+                this.showNotification('Сервис синхронизации не загружен', 'error');
+                return;
             }
 
-            const exportData = {
-                exportDate: new Date().toISOString(),
-                version: '1.0.0',
-                anime: animeList,
-                users: this.users,
-                stats: {
-                    totalAnime: animeList.length,
-                    totalUsers: this.users.length,
-                    totalAdmins: this.users.filter(u => u.isAdmin && u.adminLevel >= 1).length
-                }
-            };
-
-            const dataStr = JSON.stringify(exportData, null, 2);
-            const dataBlob = new Blob([dataStr], { type: 'application/json' });
-            const url = URL.createObjectURL(dataBlob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `anime-platform-backup-${new Date().toISOString().split('T')[0]}.json`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(url);
-
-            this.showNotification('Данные успешно экспортированы!', 'success');
+            const result = window.syncService.exportToFile();
+            
+            if (result.success) {
+                this.showNotification(result.message, 'success');
+            } else {
+                this.showNotification('Ошибка при экспорте данных: ' + (result.error || 'Неизвестная ошибка'), 'error');
+            }
         } catch (error) {
             console.error('Error exporting data:', error);
-            this.showNotification('Ошибка при экспорте данных', 'error');
+            this.showNotification('Ошибка при экспорте данных: ' + error.message, 'error');
         }
     }
 
-    importData(event) {
+    async importData(event) {
         const file = event.target.files[0];
         if (!file) return;
 
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            try {
-                const importData = JSON.parse(e.target.result);
+        if (!window.syncService) {
+            this.showNotification('Сервис синхронизации не загружен', 'error');
+            return;
+        }
+
+        try {
+            const result = await window.syncService.importFromFile(file);
+            
+            if (result.success) {
+                // Обновляем список пользователей для отображения
+                this.users = JSON.parse(localStorage.getItem('animePlatformUsers') || '[]');
                 
-                if (!importData.anime || !Array.isArray(importData.anime)) {
-                    throw new Error('Неверный формат файла');
+                this.loadAnimeList();
+                this.loadUsersList();
+                this.updateStatistics();
+                
+                let message = `Успешно импортировано ${result.animeCount} аниме`;
+                if (result.usersCount > 0) {
+                    message += ` и ${result.usersCount} пользователей`;
                 }
-
-                if (confirm(`Импортировать ${importData.anime.length} аниме? Текущие данные будут заменены.`)) {
-                    // Импортируем аниме
-                    if (this.animeService) {
-                        this.animeService.animeList = importData.anime;
-                        this.animeService.saveAnimeList();
-                    } else if (this.animeData) {
-                        this.animeData.animeList = importData.anime;
-                        this.animeData.saveAnimeData();
-                    }
-
-                    // Синхронизация с database.js
-                    if (window.database) {
-                        window.database.animeList = importData.anime;
-                        if (window.database.saveAnime) {
-                            window.database.saveAnime();
-                        }
-                    }
-
-                    // Импортируем пользователей (опционально)
-                    if (importData.users && Array.isArray(importData.users) && confirm('Импортировать пользователей?')) {
-                        this.users = importData.users;
-                        localStorage.setItem('animePlatformUsers', JSON.stringify(this.users));
-                    }
-
-                    this.loadAnimeList();
-                    this.updateStatistics();
-                    this.showNotification(`Успешно импортировано ${importData.anime.length} аниме!`, 'success');
-                }
-            } catch (error) {
-                console.error('Error importing data:', error);
-                this.showNotification('Ошибка при импорте данных: ' + error.message, 'error');
+                this.showNotification(message + '!', 'success');
             }
-        };
+        } catch (error) {
+            console.error('Error importing data:', error);
+            this.showNotification('Ошибка при импорте данных: ' + error.message, 'error');
+        }
 
-        reader.readAsText(file);
         // Сброс input для возможности повторного выбора того же файла
         event.target.value = '';
     }
@@ -1154,44 +1088,6 @@ class AdminPanel {
         document.getElementById('anime-form').classList.remove('active');
     }
 
-    showQuickSync() {
-        if (!window.syncService) {
-            this.showNotification('Сервис синхронизации не загружен', 'error');
-            return;
-        }
-
-        const qrData = window.syncService.generateQRCode();
-        const modal = document.getElementById('sync-qr-modal');
-        const container = document.getElementById('sync-qr-container');
-        const qrImage = document.getElementById('sync-qr-image');
-        const linkText = document.getElementById('sync-link-text');
-
-        if (modal && container && qrImage && linkText) {
-            qrImage.src = qrData.qrUrl;
-            linkText.textContent = qrData.url;
-            modal.classList.add('active');
-            this.showNotification('QR-код готов! Отсканируйте на телефоне', 'success');
-        }
-    }
-
-    copySyncLink() {
-        const linkText = document.getElementById('sync-link-text');
-        if (linkText) {
-            const text = linkText.textContent;
-            navigator.clipboard.writeText(text).then(() => {
-                this.showNotification('Ссылка скопирована! Отправьте её на телефон', 'success');
-            }).catch(() => {
-                // Fallback для старых браузеров
-                const textarea = document.createElement('textarea');
-                textarea.value = text;
-                document.body.appendChild(textarea);
-                textarea.select();
-                document.execCommand('copy');
-                document.body.removeChild(textarea);
-                this.showNotification('Ссылка скопирована!', 'success');
-            });
-        }
-    }
 }
 
 // Initialize admin panel when DOM is loaded

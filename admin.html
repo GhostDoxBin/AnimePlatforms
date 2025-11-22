@@ -142,8 +142,7 @@
                     <div class="tab-header">
                         <h2>Статистика платформы</h2>
                         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
-                            <button class="btn btn-primary" id="quick-sync-btn">⚡ Быстрая синхронизация</button>
-                            <button class="btn btn-secondary" id="export-data-btn">📥 Экспорт данных</button>
+                            <button class="btn btn-primary" id="export-data-btn">📥 Экспорт данных</button>
                             <button class="btn btn-secondary" id="import-data-btn">📤 Импорт данных</button>
                             <input type="file" id="import-file-input" accept=".json" style="display: none;">
                         </div>
@@ -173,44 +172,28 @@
                     </div>
                     
                     <div style="margin-top: 30px; padding: 20px; background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border-color);">
-                        <h3 style="margin-bottom: 15px; color: var(--text-primary);">⚡ Быстрая синхронизация</h3>
+                        <h3 style="margin-bottom: 15px; color: var(--text-primary);">📁 Синхронизация данных между устройствами</h3>
                         <p style="color: var(--text-secondary); margin-bottom: 15px;">
-                            <strong>Новый способ:</strong> Нажмите "Быстрая синхронизация" и отсканируйте QR-код на телефоне. Данные синхронизируются автоматически!
+                            Синхронизируйте данные между всеми вашими устройствами с помощью файлов экспорта/импорта.
+                            Данные автоматически сохраняются в браузере для быстрого доступа.
                         </p>
-                        <p style="color: var(--text-secondary); margin-bottom: 10px;">
-                            <strong>Классический способ:</strong> Экспорт/Импорт через файл
+                        <p style="color: var(--text-secondary); margin-bottom: 10px; font-weight: 600;">
+                            Как синхронизировать:
                         </p>
                         <ol style="color: var(--text-secondary); margin-left: 20px; line-height: 1.8; font-size: 14px;">
-                            <li>На ПК: нажмите "Экспорт данных" и сохраните файл</li>
-                            <li>На телефоне: откройте админ-панель и нажмите "Импорт данных"</li>
-                            <li>Выберите сохраненный файл</li>
+                            <li><strong>На первом устройстве:</strong> Нажмите "Экспорт данных" и сохраните файл</li>
+                            <li><strong>На втором устройстве:</strong> Нажмите "Импорт данных" и выберите сохраненный файл</li>
+                            <li>Данные будут автоматически синхронизированы между всеми устройствами</li>
                         </ol>
+                        <p style="color: var(--text-secondary); margin-top: 15px; font-size: 13px; font-style: italic;">
+                            💡 Совет: Экспортируйте данные регулярно для создания резервных копий
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Модальное окно быстрой синхронизации для админ-панели -->
-    <div class="modal-overlay" id="sync-qr-modal">
-        <div class="modal">
-            <button class="close-modal" id="close-sync-modal-btn">&times;</button>
-            <div class="modal-content">
-                <div class="modal-info" style="width: 100%; text-align: center;">
-                    <h2 style="margin-bottom: 10px;">Быстрая синхронизация</h2>
-                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
-                        Откройте админ-панель на ПК и отсканируйте этот QR-код камерой телефона,
-                        чтобы перенести каталог аниме.
-                    </p>
-                    <div id="sync-qr-container" style="margin-top: 10px; text-align: center;">
-                        <img id="sync-qr-image" src="" alt="QR код" style="max-width: 300px; border-radius: 8px; margin-bottom: 15px;">
-                        <p style="color: var(--text-secondary); margin-bottom: 10px; word-break: break-all; font-size: 12px;" id="sync-link-text"></p>
-                        <button class="btn btn-secondary" id="copy-sync-link-btn">📋 Копировать ссылку</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 
     <!-- Anime Form Modal -->
     <div class="modal-overlay" id="anime-form">
