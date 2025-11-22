@@ -98,6 +98,9 @@ class ProfileManager {
         // Навигация по разделам
         this.setupProfileNavigation();
 
+        // Избранное
+        this.setupFavorites();
+
         // Синхронизация устройств из профиля
         this.setupProfileSync();
     }
@@ -238,9 +241,209 @@ class ProfileManager {
                 sections.forEach(section => {
                     section.classList.remove('active');
                 });
-                document.getElementById(sectionId).classList.add('active');
+                
+                const targetSection = document.getElementById(sectionId);
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                    
+                    // Загружаем избранное при переходе на вкладку
+                    if (sectionId === 'profile-favorites') {
+                        this.loadFavorites();
+                    }
+                }
             });
         });
+    }
+
+    setupFavorites() {
+        // Загружаем избранное сразу если вкладка активна
+        const favoritesSection = document.getElementById('profile-favorites');
+        if (favoritesSection && favoritesSection.classList.contains('active')) {
+            this.loadFavorites();
+        }
+
+        // Слушаем изменения избранного
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'animeFavorites') {
+                const favoritesSection = document.getElementById('profile-favorites');
+                if (favoritesSection && favoritesSection.classList.contains('active')) {
+                    this.loadFavorites();
+                }
+            }
+        });
+    }
+
+    loadFavorites() {
+        const favoritesGrid = document.getElementById('favorites-grid');
+        const favoritesEmpty = document.getElementById('favorites-empty');
+        
+        if (!favoritesGrid || !favoritesEmpty) return;
+
+        let favorites = [];
+        let animeList = [];
+
+        // Получаем список ID избранных
+        try {
+            if (window.animeService && window.animeService.favorites) {
+                favorites = Array.from(window.animeService.favorites);
+            } else {
+                const favoritesData = localStorage.getItem('animeFavorites');
+                if (favoritesData) {
+                    favorites = JSON.parse(favoritesData);
+                }
+            }
+        } catch (e) {
+            console.error('Ошибка загрузки избранного:', e);
+        }
+
+        // Получаем список всех аниме
+        if (window.animeService) {
+            animeList = window.animeService.getAllAnime();
+        } else if (window.animeData && window.animeData.animeList) {
+            animeList = window.animeData.animeList;
+        } else if (window.database && window.database.animeList) {
+            animeList = window.database.animeList;
+        }
+
+        // Фильтруем избранные аниме
+        const favoriteAnime = animeList.filter(anime => {
+            const animeId = typeof anime.id === 'string' ? parseInt(anime.id) : anime.id;
+            return favorites.some(favId => {
+                const favIdNum = typeof favId === 'string' ? parseInt(favId) : favId;
+                return animeId === favIdNum;
+            });
+        });
+
+        if (favoriteAnime.length === 0) {
+            favoritesGrid.style.display = 'none';
+            favoritesEmpty.style.display = 'block';
+            return;
+        }
+
+        favoritesGrid.style.display = 'grid';
+        favoritesEmpty.style.display = 'none';
+        favoritesGrid.innerHTML = '';
+
+        // Создаем карточки для избранных аниме
+        favoriteAnime.forEach(anime => {
+            const card = this.createFavoriteCard(anime);
+            favoritesGrid.appendChild(card);
+        });
+    }
+
+    createFavoriteCard(anime) {
+        const card = document.createElement('div');
+        card.className = 'anime-card';
+        card.style.cursor = 'pointer';
+
+        const poster = anime.poster || 'https://via.placeholder.com/300x450/333/fff?text=' + encodeURIComponent(anime.title || 'Аниме');
+        const rating = anime.rating || 0;
+        const year = anime.year || 'Не указан';
+        const episodes = anime.episodes || 0;
+        const genre = anime.genre || 'Не указан';
+
+        card.innerHTML = `
+            <div class="anime-image">
+                <img src="${poster}" alt="${anime.title}" loading="lazy">
+            </div>
+            <div class="anime-info">
+                <h3 class="anime-title">${anime.title || 'Без названия'}</h3>
+                <div class="anime-rating">
+                    <span class="rating-stars">★</span>
+                    <span class="rating-value">${rating.toFixed(1)}</span>
+                </div>
+                <div class="anime-description">
+                    ${anime.description || 'Описание отсутствует'}
+                </div>
+                <div style="margin-top: auto; display: flex; gap: 8px; flex-direction: column;">
+                    <button class="btn-watch" data-anime-id="${anime.id}">Смотреть</button>
+                    <button class="btn-favorite active" data-anime-id="${anime.id}" style="background: rgba(255, 107, 156, 0.1); color: var(--accent-primary); border: 1px solid var(--accent-primary);">
+                        ★ Удалить из избранного
+                    </button>
+                </div>
+            </div>
+        `;
+
+        // Обработчики событий
+        const watchBtn = card.querySelector('.btn-watch');
+        const favoriteBtn = card.querySelector('.btn-favorite');
+
+        if (watchBtn) {
+            watchBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.watchAnime(anime);
+            });
+        }
+
+        if (favoriteBtn) {
+            favoriteBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.removeFromFavorites(anime.id, card);
+            });
+        }
+
+        // Клик на карточку открывает детали
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('button')) {
+                this.openAnimeDetails(anime);
+            }
+        });
+
+        return card;
+    }
+
+    watchAnime(anime) {
+        // Сохраняем аниме для плеера
+        localStorage.setItem('currentAnime', JSON.stringify(anime));
+        localStorage.setItem('currentEpisode', '1');
+        
+        // Переходим на страницу плеера
+        window.location.href = `player.html?anime=${anime.id}&episode=1`;
+    }
+
+    removeFromFavorites(animeId, cardElement) {
+        try {
+            let removed = false;
+
+            if (window.animeService && window.animeService.toggleFavorite) {
+                removed = window.animeService.toggleFavorite(animeId);
+            } else if (window.animeData && window.animeData.toggleFavorite) {
+                removed = window.animeData.toggleFavorite(animeId);
+            }
+
+            if (removed) {
+                // Анимация удаления
+                if (cardElement) {
+                    cardElement.style.transition = 'opacity 0.3s, transform 0.3s';
+                    cardElement.style.opacity = '0';
+                    cardElement.style.transform = 'scale(0.9)';
+                    setTimeout(() => {
+                        cardElement.remove();
+                        this.loadFavorites(); // Перезагружаем список
+                    }, 300);
+                }
+                this.showNotification('Удалено из избранного', 'success');
+
+                // Сохраняем изменения в sync-service
+                if (window.syncService) {
+                    const data = window.syncService.getAllData();
+                    window.syncService.saveToStorage(data);
+                }
+            }
+        } catch (error) {
+            console.error('Ошибка удаления из избранного:', error);
+            this.showNotification('Ошибка удаления из избранного', 'error');
+        }
+    }
+
+    openAnimeDetails(anime) {
+        // Открываем модальное окно с деталями аниме
+        if (window.animeModal && window.animeModal.open) {
+            window.animeModal.open(anime);
+        } else {
+            // Fallback - переходим на страницу каталога
+            window.location.href = `catalog.html#anime-${anime.id}`;
+        }
     }
 
     async saveProfile(e) {

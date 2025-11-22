@@ -16,6 +16,7 @@ class SyncService {
     getAllData() {
         let animeList = [];
         let users = [];
+        let favorites = [];
         
         // Получаем аниме
         if (window.animeService) {
@@ -33,11 +34,26 @@ class SyncService {
             console.error('Ошибка чтения пользователей:', e);
         }
 
+        // Получаем избранное
+        try {
+            if (window.animeService && window.animeService.favorites) {
+                favorites = Array.from(window.animeService.favorites);
+            } else {
+                const favoritesData = localStorage.getItem('animeFavorites');
+                if (favoritesData) {
+                    favorites = JSON.parse(favoritesData);
+                }
+            }
+        } catch (e) {
+            console.error('Ошибка чтения избранного:', e);
+        }
+
         return {
             anime: animeList,
             users: users,
+            favorites: favorites,
             timestamp: new Date().toISOString(),
-            version: '2.0'
+            version: '2.1'
         };
     }
 
@@ -105,6 +121,28 @@ class SyncService {
                     if (updatedUser) {
                         localStorage.setItem('currentUser', JSON.stringify(updatedUser));
                     }
+                }
+            }
+
+            // Импортируем избранное (объединяем)
+            if (data.favorites && Array.isArray(data.favorites)) {
+                try {
+                    const currentFavorites = JSON.parse(localStorage.getItem('animeFavorites') || '[]');
+                    const mergedFavorites = [...new Set([...currentFavorites, ...data.favorites])];
+                    localStorage.setItem('animeFavorites', JSON.stringify(mergedFavorites));
+                    
+                    // Обновляем избранное в сервисах
+                    if (window.animeService && window.animeService.favorites) {
+                        window.animeService.favorites = new Set(mergedFavorites);
+                        if (window.animeService.saveFavorites) {
+                            window.animeService.saveFavorites();
+                        }
+                    }
+                    if (window.animeData) {
+                        window.animeData.favorites = mergedFavorites;
+                    }
+                } catch (e) {
+                    console.error('Ошибка импорта избранного:', e);
                 }
             }
 
@@ -462,6 +500,19 @@ class SyncService {
 
         // Перехватываем изменения пользователей через MutationObserver
         this.observeStorageChanges();
+
+        // Перехватываем изменения избранного
+        if (window.animeService && window.animeService.saveFavorites) {
+            const originalSave = window.animeService.saveFavorites.bind(window.animeService);
+            const self = this;
+            window.animeService.saveFavorites = function() {
+                originalSave();
+                setTimeout(() => {
+                    const data = self.getAllData();
+                    self.saveToStorage(data);
+                }, 100);
+            };
+        }
     }
 
     // Наблюдение за изменениями в localStorage
@@ -474,7 +525,8 @@ class SyncService {
             originalSetItem.apply(this, arguments);
             
             if (key === 'animePlatformUsers' || key === 'currentUser' || 
-                key === 'anime_platform_anime' || key === 'anime_platform_sync') {
+                key === 'anime_platform_anime' || key === 'anime_platform_sync' ||
+                key === 'animeFavorites') {
                 // Отложенное сохранение для избежания множественных вызовов
                 if (self.saveTimeout) {
                     clearTimeout(self.saveTimeout);

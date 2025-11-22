@@ -86,8 +86,13 @@ class PlayerPage {
             this.currentAnime = anime;
             this.updatePlayerInfo(anime);
             this.loadEpisodes();
-            this.loadVideo();
             this.hidePlaceholder();
+            // Автоматически загружаем видео только если есть URL
+            const episodeData = anime.episodesList?.find(ep => ep.number === this.currentEpisode);
+            const videoUrl = episodeData?.videoUrl || anime.videoUrl;
+            if (videoUrl) {
+                this.loadVideo();
+            }
         } else {
             this.showPlaceholder();
             if (window.Helpers && window.Helpers.showNotification) {
@@ -112,6 +117,19 @@ class PlayerPage {
             status: document.getElementById('player-status'),
             studio: document.getElementById('player-studio')
         };
+
+        // Update mobile episode info
+        const episodeInfo = document.getElementById('current-episode-info');
+        const episodeNumberEl = document.getElementById('current-episode-number');
+        if (episodeInfo && episodeNumberEl && this.currentEpisode) {
+            episodeNumberEl.textContent = this.currentEpisode;
+            // Показываем на мобильных
+            if (window.innerWidth <= 768) {
+                episodeInfo.style.display = 'block';
+            } else {
+                episodeInfo.style.display = 'none';
+            }
+        }
 
         // Update all elements
         Object.keys(elements).forEach(key => {
@@ -252,6 +270,17 @@ class PlayerPage {
         if (titleElement && this.currentAnime) {
             titleElement.textContent = `${this.currentAnime.title} - Эпизод ${episodeNumber}`;
         }
+
+        // Update mobile episode info
+        const episodeInfo = document.getElementById('current-episode-info');
+        const episodeNumberEl = document.getElementById('current-episode-number');
+        if (episodeInfo && episodeNumberEl) {
+            episodeNumberEl.textContent = episodeNumber;
+            // Показываем на мобильных
+            if (window.innerWidth <= 768) {
+                episodeInfo.style.display = 'block';
+            }
+        }
         
         // Save episode to localStorage
         localStorage.setItem('currentEpisode', episodeNumber.toString());
@@ -262,12 +291,20 @@ class PlayerPage {
 
     async playVideo() {
         if (!this.currentAnime) {
-            alert('Пожалуйста, выберите аниме для воспроизведения');
+            if (window.Helpers && window.Helpers.showNotification) {
+                window.Helpers.showNotification('Пожалуйста, выберите аниме для воспроизведения', 'error');
+            } else {
+                alert('Пожалуйста, выберите аниме для воспроизведения');
+            }
             return;
         }
 
         if (!this.currentEpisode) {
-            alert('Пожалуйста, выберите эпизод для воспроизведения');
+            if (window.Helpers && window.Helpers.showNotification) {
+                window.Helpers.showNotification('Пожалуйста, выберите эпизод для воспроизведения', 'error');
+            } else {
+                alert('Пожалуйста, выберите эпизод для воспроизведения');
+            }
             return;
         }
 
@@ -279,12 +316,27 @@ class PlayerPage {
             }
             
             // Show loading
-            this.videoContainer.innerHTML = '<div style="color: white; text-align: center; padding: 40px;"><div style="font-size: 48px; margin-bottom: 20px;">⏳</div><h3>Загрузка видео...</h3></div>';
+            this.videoContainer.innerHTML = `
+                <div style="color: white; text-align: center; padding: 40px; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 400px;">
+                    <div style="font-size: 48px; margin-bottom: 20px; animation: spin 1s linear infinite;">⏳</div>
+                    <h3 style="font-size: 20px; margin-bottom: 10px;">Загрузка видео...</h3>
+                    <p style="font-size: 14px; color: #b8c1cc;">Пожалуйста, подождите</p>
+                </div>
+            `;
             
             // Create video player container
             const videoContainer = document.createElement('div');
             videoContainer.className = 'video-player-container';
-            videoContainer.style.cssText = 'width: 100%; height: 100%; background: #000; display: flex; align-items: center; justify-content: center; min-height: 500px;';
+            videoContainer.style.cssText = `
+                width: 100%; 
+                height: 100%; 
+                background: #000; 
+                display: flex; 
+                align-items: center; 
+                justify-content: center; 
+                min-height: 400px;
+                position: relative;
+            `;
             
             // Get episode data
             const episodeData = this.currentAnime.episodesList?.find(ep => ep.number === this.currentEpisode);
@@ -293,6 +345,9 @@ class PlayerPage {
             // Если нет URL, пытаемся получить из открытых источников
             if (!videoUrl && window.videoService) {
                 try {
+                    if (window.Helpers && window.Helpers.showNotification) {
+                        window.Helpers.showNotification('Поиск видео в открытых источниках...', 'success');
+                    }
                     const fetchedUrl = await window.videoService.getDirectVideoUrl(
                         this.currentAnime.title || this.currentAnime.originalTitle,
                         this.currentEpisode
@@ -312,23 +367,64 @@ class PlayerPage {
                     const videoId = this.extractYouTubeId(videoUrl);
                     if (videoId) {
                         const iframe = document.createElement('iframe');
-                        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
-                        iframe.style.cssText = 'width: 100%; height: 100%; min-height: 500px; border: none; border-radius: 10px;';
-                        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&playsinline=1`;
+                        iframe.style.cssText = `
+                            width: 100%; 
+                            height: 100%; 
+                            min-height: 400px; 
+                            border: none; 
+                            border-radius: 10px;
+                            max-width: 100%;
+                        `;
+                        iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
                         iframe.allowFullscreen = true;
+                        iframe.setAttribute('playsinline', '1');
                         videoContainer.appendChild(iframe);
                         this.videoContainer.innerHTML = '';
                         this.videoContainer.appendChild(videoContainer);
+                        this.currentVideo = iframe;
                         return;
                     }
+                }
+                
+                // VK Video URL
+                if (videoUrl.includes('vk.com') || videoUrl.includes('vk.ru')) {
+                    // VK видео можно встроить через iframe
+                    const iframe = document.createElement('iframe');
+                    iframe.src = videoUrl;
+                    iframe.style.cssText = `
+                        width: 100%; 
+                        height: 100%; 
+                        min-height: 400px; 
+                        border: none; 
+                        border-radius: 10px;
+                        max-width: 100%;
+                    `;
+                    iframe.allowFullscreen = true;
+                    videoContainer.appendChild(iframe);
+                    this.videoContainer.innerHTML = '';
+                    this.videoContainer.appendChild(videoContainer);
+                    this.currentVideo = iframe;
+                    return;
                 }
                 
                 // Прямой видео URL
                 const video = document.createElement('video');
                 video.controls = true;
                 video.autoplay = false;
-                video.style.cssText = 'width: 100%; max-width: 100%; height: auto; max-height: 100%; border-radius: 10px;';
+                video.playsInline = true; // Для мобильных устройств
+                video.style.cssText = `
+                    width: 100%; 
+                    max-width: 100%; 
+                    height: auto; 
+                    max-height: 100%; 
+                    border-radius: 10px;
+                    outline: none;
+                `;
                 video.crossOrigin = 'anonymous';
+                video.setAttribute('webkit-playsinline', 'true');
+                video.setAttribute('playsinline', 'true');
+                video.setAttribute('x5-playsinline', 'true'); // Для Android
                 
                 const source = document.createElement('source');
                 source.src = videoUrl;
@@ -337,13 +433,28 @@ class PlayerPage {
                 
                 video.innerHTML += 'Ваш браузер не поддерживает видео тег.';
                 
-                video.addEventListener('error', () => {
-                    console.error('Video load error, showing fallback');
+                // Обработка ошибок загрузки
+                video.addEventListener('error', (e) => {
+                    console.error('Video load error:', e);
+                    if (window.Helpers && window.Helpers.showNotification) {
+                        window.Helpers.showNotification('Ошибка загрузки видео. Попробуйте другой эпизод или проверьте URL.', 'error');
+                    }
                     this.showVideoFallback(videoContainer, videoUrl);
                 });
                 
                 video.addEventListener('loadeddata', () => {
                     console.log('Video loaded successfully');
+                    if (window.Helpers && window.Helpers.showNotification) {
+                        window.Helpers.showNotification('Видео загружено', 'success');
+                    }
+                });
+                
+                video.addEventListener('loadstart', () => {
+                    console.log('Video loading started');
+                });
+                
+                video.addEventListener('canplay', () => {
+                    console.log('Video can start playing');
                 });
                 
                 videoContainer.appendChild(video);
@@ -357,6 +468,10 @@ class PlayerPage {
                 // Try to play
                 video.play().catch(error => {
                     console.log('Auto-play was prevented:', error);
+                    // На мобильных устройствах автовоспроизведение часто блокируется
+                    if (window.Helpers && window.Helpers.showNotification) {
+                        window.Helpers.showNotification('Нажмите кнопку воспроизведения для начала просмотра', 'success');
+                    }
                 });
             } else {
                 // Show fallback if no video URL
@@ -398,27 +513,33 @@ class PlayerPage {
     }
 
     showVideoFallback(container, videoUrl = null) {
+        const episodeData = this.currentAnime.episodesList?.find(ep => ep.number === this.currentEpisode);
         container.innerHTML = `
-            <div style="color: white; text-align: center; padding: 40px; max-width: 600px;">
-                <div style="font-size: 64px; margin-bottom: 20px;">🎬</div>
-                <h3 style="font-size: 24px; margin-bottom: 15px;">${this.currentAnime.title}</h3>
-                <p style="font-size: 18px; margin-bottom: 10px; color: #b8c1cc;">Эпизод ${this.currentEpisode}</p>
-                <p style="font-size: 16px; margin-bottom: 20px; color: #8a99b3;">Длительность: ${this.currentAnime.episodesList?.find(ep => ep.number === this.currentEpisode)?.duration || '24:00'}</p>
-                ${videoUrl ? `<p style="font-size: 14px; color: #6c8cff; word-break: break-all; margin-bottom: 20px;">Источник: ${videoUrl}</p>` : ''}
-                <p style="font-size: 14px; color: #8a99b3; margin-top: 20px;">
+            <div style="color: white; text-align: center; padding: 20px; max-width: 100%; width: 100%;">
+                <div style="font-size: 48px; margin-bottom: 15px;">🎬</div>
+                <h3 style="font-size: 20px; margin-bottom: 10px; word-wrap: break-word;">${this.currentAnime.title}</h3>
+                <p style="font-size: 16px; margin-bottom: 8px; color: #b8c1cc;">Эпизод ${this.currentEpisode}</p>
+                <p style="font-size: 14px; margin-bottom: 15px; color: #8a99b3;">Длительность: ${episodeData?.duration || '24:00'}</p>
+                ${videoUrl ? `
+                    <div style="margin-bottom: 15px; padding: 10px; background: rgba(108, 140, 255, 0.1); border-radius: 6px;">
+                        <p style="font-size: 12px; color: #6c8cff; word-break: break-all; margin: 0;">Источник: ${videoUrl}</p>
+                    </div>
+                ` : ''}
+                <p style="font-size: 13px; color: #8a99b3; margin-bottom: 15px; line-height: 1.5;">
                     Видео загружается из открытых источников. Если видео не воспроизводится, 
                     попробуйте выбрать другой эпизод или обновить страницу.
                 </p>
-                <div style="margin-top: 30px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                    <h4>Функциональность плеера:</h4>
-                    <ul style="text-align: left; display: inline-block;">
-                        <li>Управление громкостью</li>
-                        <li>Изменение скорости воспроизведения</li>
-                        <li>Настройка качества видео</li>
-                        <li>Субтитры</li>
-                        <li>Полноэкранный режим</li>
-                    </ul>
-                </div>
+                ${!videoUrl ? `
+                    <div style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; font-size: 12px;">
+                        <p style="margin-bottom: 10px; color: #ff6b9c; font-weight: 600;">💡 Для просмотра видео:</p>
+                        <p style="text-align: left; color: #b8c1cc; line-height: 1.6;">
+                            1. Откройте админ-панель<br>
+                            2. Добавьте URL для видео в разделе эпизодов<br>
+                            3. Используйте ссылки с <a href="https://animego.org" target="_blank" style="color: #6c8cff;">AnimeGO</a>, 
+                            <a href="https://youtube.com" target="_blank" style="color: #6c8cff;">YouTube</a> или других источников
+                        </p>
+                    </div>
+                ` : ''}
             </div>
         `;
     }

@@ -756,7 +756,14 @@ class AdminPanel {
                 <div class="form-group">
                     <label>Ссылка на видео</label>
                     <input type="url" class="form-input episode-video" value="${episode.videoUrl || ''}" 
-                           data-index="${index}" placeholder="https://example.com/video.mp4 или YouTube ссылка">
+                           data-index="${index}" placeholder="https://example.com/video.mp4 или YouTube/VK ссылка">
+                    <p style="color: var(--text-secondary); font-size: 11px; margin-top: 5px; line-height: 1.4;">
+                        💡 <strong>Где брать URL:</strong> <a href="https://animego.org" target="_blank" style="color: var(--accent-secondary);">AnimeGO</a>, 
+                        <a href="https://anilibria.tv" target="_blank" style="color: var(--accent-secondary);">AniLibria</a>, 
+                        <a href="https://yummyanime.club" target="_blank" style="color: var(--accent-secondary);">YummyAnime</a>, 
+                        <a href="https://youtube.com" target="_blank" style="color: var(--accent-secondary);">YouTube</a>, 
+                        <a href="https://vk.com" target="_blank" style="color: var(--accent-secondary);">VK Video</a>
+                    </p>
                 </div>
                 <div class="form-group">
                     <label>Превью (URL)</label>

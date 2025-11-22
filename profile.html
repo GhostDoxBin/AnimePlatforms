@@ -57,6 +57,7 @@
                     <li><a href="#" class="profile-menu-link active" data-section="profile-info">Личная информация</a></li>
                     <li><a href="#" class="profile-menu-link" data-section="profile-security">Безопасность</a></li>
                     <li><a href="#" class="profile-menu-link" data-section="profile-preferences">Настройки</a></li>
+                    <li><a href="#" class="profile-menu-link" data-section="profile-favorites">⭐ Избранное</a></li>
                     <li><a href="#" class="profile-menu-link" data-section="sync">Синхронизация</a></li>
                 </ul>
             </div>
@@ -151,6 +152,26 @@
                     </form>
                 </div>
 
+                <!-- Избранное -->
+                <div class="profile-section" id="profile-favorites">
+                    <h3 class="profile-section-title">⭐ Избранное</h3>
+                    <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                        Здесь отображаются все аниме, которые вы добавили в избранное для просмотра позже.
+                        Избранные аниме автоматически синхронизируются между всеми вашими устройствами.
+                    </p>
+                    <div id="favorites-grid" class="anime-grid" style="margin-top: 30px;">
+                        <!-- Избранные аниме будут загружены здесь -->
+                    </div>
+                    <div id="favorites-empty" style="text-align: center; padding: 60px 20px; display: none;">
+                        <div style="font-size: 64px; margin-bottom: 20px;">⭐</div>
+                        <h3 style="color: var(--text-primary); margin-bottom: 10px;">Избранное пусто</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 20px;">
+                            Добавьте аниме в избранное, нажав кнопку "В избранное" на карточке аниме
+                        </p>
+                        <a href="catalog.html" class="btn btn-save">Перейти в каталог</a>
+                    </div>
+                </div>
+
                 <!-- Синхронизация устройств -->
                 <div class="profile-section" id="sync">
                     <h3 class="profile-section-title">Синхронизация устройств</h3>
@@ -235,6 +256,7 @@
     <script src="utils/helpers.js"></script>
     
     <!-- Компоненты -->
+    <script src="components/AnimeCard.js"></script>
     <script src="components/Notification.js"></script>
     
     <!-- Сервисы -->
